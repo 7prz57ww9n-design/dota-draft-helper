@@ -1,11 +1,17 @@
 import { heroById } from '../data/heroes';
 import type { HeroId } from '../data/heroes';
 import { POSITION_LABELS } from '../domain/tags';
-import type { Player, Position } from '../domain/types';
+import type { Player, PoolEntry, Position } from '../domain/types';
 import { useStore } from '../store/store';
 import HeroPicker from './HeroPicker';
 
 const POSITIONS: Position[] = [1, 2, 3, 4, 5];
+
+/** Display order: best → good → okay, alphabetical within a comfort level. */
+function sortByComfort(pool: PoolEntry[]): PoolEntry[] {
+  const name = (e: PoolEntry) => heroById(e.heroId)?.localizedName ?? '';
+  return [...pool].sort((a, b) => b.comfort - a.comfort || name(a).localeCompare(name(b)));
+}
 
 export default function TeamScreen() {
   const players = useStore((s) => s.players);
@@ -45,7 +51,7 @@ export default function TeamScreen() {
               />
             </div>
             <ul className="pool">
-              {player?.pool.map((e) => {
+              {sortByComfort(player?.pool ?? []).map((e) => {
                 const hero = heroById(e.heroId);
                 const name = hero?.localizedName ?? `Hero ${e.heroId}`;
                 return (
@@ -57,9 +63,9 @@ export default function TeamScreen() {
                       value={e.comfort}
                       onChange={(ev) => setComfort(`pos-${pos}`, e.heroId, Number(ev.target.value) as 1 | 2 | 3)}
                     >
-                      <option value={1}>1 · okay</option>
-                      <option value={2}>2 · good</option>
                       <option value={3}>3 · best</option>
+                      <option value={2}>2 · good</option>
+                      <option value={1}>1 · okay</option>
                     </select>
                     <button
                       aria-label={`Remove ${name} from position ${pos}`}

@@ -1,6 +1,6 @@
 import { TAG_LABELS, THREATS, THREAT_ANSWER, THREAT_LABELS } from '../domain/tags';
 
-export type HelpTab = 'Draft' | 'Team' | 'Ratings' | 'Threats' | 'Synergy' | 'Data';
+export type HelpTab = 'Draft' | 'Heroes' | 'Team' | 'Ratings' | 'Threats' | 'Synergy' | 'Data';
 
 export interface HelpSection { heading: string; items: string[] }
 export interface PageHelp { summary: string; sections: HelpSection[] }
@@ -52,6 +52,25 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
       },
     ],
   },
+  Heroes: {
+    summary: 'All heroes grouped by primary attribute, like the in-game hero grid. A quick visual reference during the draft.',
+    sections: [
+      {
+        heading: 'What you see',
+        items: [
+          'Strength, Agility, Intelligence and Universal heroes, alphabetical within each group. Hover a portrait for the hero\'s name.',
+          'A blue outline and a number badge mark heroes in our pools; the number is the position (e.g. 4/5 = in both support pools).',
+          'Heroes already used in the current draft are greyed out with BAN, OURS or ENEMY.',
+        ],
+      },
+      {
+        heading: 'How it affects the drafter',
+        items: [
+          'It doesn\'t: this page is only for reference. Record picks and bans on the Draft page.',
+        ],
+      },
+    ],
+  },
   Team: {
     summary: 'One row per position. Add each player\'s hero pool and how comfortable they are on each hero.',
     sections: [
@@ -59,7 +78,7 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
         heading: 'How to use it',
         items: [
           'Type a name for the player, then add heroes with the search box (type, Enter).',
-          'Set comfort per hero: 3 · best, 2 · good, 1 · okay. Remove a hero with ×.',
+          'Set comfort per hero: 3 · best, 2 · good, 1 · okay. Each pool is listed best first. Remove a hero with ×.',
           'The same hero can be in several players\' pools.',
         ],
       },

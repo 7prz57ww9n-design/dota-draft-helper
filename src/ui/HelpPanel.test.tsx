@@ -8,7 +8,7 @@ beforeEach(() => useStore.setState({ ...initialState }));
 describe('page help', () => {
   test('every page shows its one-line summary', () => {
     render(<App />);
-    for (const tab of ['Team', 'Ratings', 'Threats', 'Synergy', 'Data', 'Draft'] as const) {
+    for (const tab of ['Heroes', 'Team', 'Ratings', 'Threats', 'Synergy', 'Data', 'Draft'] as const) {
       fireEvent.click(screen.getByRole('tab', { name: tab }));
       expect(screen.getByText(PAGE_HELP[tab].summary)).toBeInTheDocument();
     }
