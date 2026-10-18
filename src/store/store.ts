@@ -37,6 +37,7 @@ export interface Actions {
   setAvailable: (ids: HeroId[] | null) => void;
   setWin: (win: WinCondition) => void;
   importData: (data: ExportFile) => void;
+  resetAll: () => void;
 }
 
 export type StoreState = DataState & Actions;
@@ -131,6 +132,9 @@ export const useStore = create<StoreState>()(
           threats: data.threats,
           synergies: data.synergies,
           watchlist: data.watchlist,
+        }),
+        resetAll: () => set({
+          players: [], profiles: {}, threats: seedThreats(), synergies: [], watchlist: {},
         }),
       };
     },
