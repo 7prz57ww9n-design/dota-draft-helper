@@ -99,8 +99,8 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
       {
         heading: 'How to rate',
         items: [
-          'Click a cell to cycle 0 → 1 → 2 → 3 → 0. 0 = not at all, 1 = a little, 2 = good at it, 3 = a core reason to pick this hero.',
-          'Hover a column header for what the tag means.',
+          'Choose a hero on the left (or use Prev / Next), then click 0–3 on each row: 0 = not at all, 1 = a little, 2 = good at it, 3 = a core reason to pick this hero.',
+          'Each row explains what the tag means. The hero list shows how many tags each hero has rated so far.',
           'Ratings belong to the hero, not the player: Tidehunter\'s initiation is the same whoever plays him. Player comfort is set on the Team page.',
           'Rate together as a team so a "3" means the same thing for everyone.',
         ],

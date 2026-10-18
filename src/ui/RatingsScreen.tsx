@@ -1,26 +1,55 @@
-import { heroById } from '../data/heroes';
+import { useState } from 'react';
+import { heroById, type HeroId } from '../data/heroes';
 import { ANSWER_TAGS, TAG_DEFINITIONS, TAG_LABELS } from '../domain/tags';
-import type { DamageType, Phase, Rating, RatingKey } from '../domain/types';
+import type { DamageType, HeroProfile, Phase, Rating, RatingKey } from '../domain/types';
 import { useStore } from '../store/store';
 
-const GROUPS: { title: string; keys: RatingKey[] }[] = [
+const GROUPS: { title: string; note?: string; keys: RatingKey[] }[] = [
   { title: 'Fighting', keys: ['initiation', 'counterInitiation', 'disable', 'bkbPiercingDisable', 'pickoff', 'aoeDamage', 'burst', 'sustainedDamage', 'frontline'] },
   { title: 'Keeping heroes alive', keys: ['save', 'sustain', 'dispel'] },
   { title: 'Map and objectives', keys: ['waveclear', 'push', 'splitPush', 'mapPressure', 'earlyRoshan', 'laning'] },
-  { title: 'Setup & follow-up', keys: ['setup', 'followUp'] },
-  { title: 'Answers', keys: ANSWER_TAGS },
+  { title: 'Setup & follow-up', note: 'Having both in a draft gives a combo bonus.', keys: ['setup', 'followUp'] },
+  { title: 'Answers to enemy threats', note: 'Only count once the enemy picks a hero with the matching threat.', keys: ANSWER_TAGS },
 ];
 const ALL_KEYS = GROUPS.flatMap((g) => g.keys);
-const PHASES: Phase[] = ['early', 'mid', 'late'];
+const PHASES: { phase: Phase; label: string; definition: string }[] = [
+  { phase: 'early', label: 'Early game', definition: 'Strength in the first ~10 minutes: lanes and early fights.' },
+  { phase: 'mid', label: 'Mid game', definition: 'Strength around 10–30 minutes: rotations, towers, Roshan.' },
+  { phase: 'late', label: 'Late game', definition: 'Strength after ~30 minutes with full items.' },
+];
 const DAMAGE: DamageType[] = ['physical', 'magical', 'pure'];
+const SCALE: { value: Rating; word: string }[] = [
+  { value: 0, word: 'none' }, { value: 1, word: 'a little' }, { value: 2, word: 'good' }, { value: 3, word: 'core' },
+];
 
-const next = (r: Rating): Rating => ((r + 1) % 4) as Rating;
+const ratedCount = (p: HeroProfile | undefined) => ALL_KEYS.filter((k) => (p?.ratings[k] ?? 0) > 0).length;
 
-function Cell({ value, label, onClick }: { value: Rating; label: string; onClick: () => void }) {
+function RatingRow({ label, definition, value, onChange }: {
+  label: string; definition: string; value: Rating; onChange: (r: Rating) => void;
+}) {
   return (
-    <td>
-      <button className={`rate rate-${value}`} aria-label={label} onClick={onClick}>{value}</button>
-    </td>
+    <div className="rating-row">
+      <div className="rating-text">
+        <div className="rating-label">{label}</div>
+        <div className="rating-def">{definition}</div>
+      </div>
+      <div role="radiogroup" aria-label={label} className="rating-scale">
+        {SCALE.map((s) => (
+          <button
+            key={s.value}
+            type="button"
+            role="radio"
+            aria-checked={value === s.value}
+            aria-label={`${s.value} — ${s.word}`}
+            className={`scale-btn scale-${s.value}${value === s.value ? ' selected' : ''}`}
+            onClick={() => onChange(s.value)}
+          >
+            <span className="scale-num">{s.value}</span>
+            <span className="scale-word">{s.word}</span>
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -30,9 +59,13 @@ export default function RatingsScreen() {
   const setRating = useStore((s) => s.setRating);
   const setPower = useStore((s) => s.setPower);
   const setDamageType = useStore((s) => s.setDamageType);
+  const [selectedId, setSelectedId] = useState<HeroId | null>(null);
 
-  const ids = [...new Set(players.flatMap((p) => p.pool.map((e) => e.heroId)))];
-  const heroes = ids
+  const positionsOf = new Map<HeroId, number[]>();
+  for (const p of players) {
+    for (const e of p.pool) positionsOf.set(e.heroId, [...(positionsOf.get(e.heroId) ?? []), p.position]);
+  }
+  const heroes = [...positionsOf.keys()]
     .map((id) => heroById(id))
     .filter((h): h is NonNullable<typeof h> => !!h)
     .sort((a, b) => a.localizedName.localeCompare(b.localizedName));
@@ -46,68 +79,77 @@ export default function RatingsScreen() {
     );
   }
 
+  const index = Math.max(0, heroes.findIndex((h) => h.id === selectedId));
+  const hero = heroes[index];
+  const prof = profiles[hero.id];
+
   return (
     <div className="screen">
       <h2>Ratings</h2>
-      <p className="hint">Click a cell to cycle 0 → 1 → 2 → 3 → 0.</p>
-      <div className="table-wrap">
-        <table className="ratings">
-          <thead>
-            <tr>
-              <th rowSpan={2} className="hero-col">Hero</th>
-              {GROUPS.map((g) => <th key={g.title} colSpan={g.keys.length} className="group">{g.title}</th>)}
-              <th colSpan={3} className="group">Power</th>
-              <th rowSpan={2}>Damage</th>
-            </tr>
-            <tr>
-              {ALL_KEYS.map((k) => (
-                <th key={k} title={TAG_DEFINITIONS[k]} className="tag"><span>{TAG_LABELS[k]}</span></th>
+      <div className="ratings-layout">
+        <ul className="ratings-heroes" aria-label="Heroes to rate">
+          {heroes.map((h, i) => (
+            <li key={h.id}>
+              <button type="button" className={i === index ? 'active' : ''} aria-current={i === index} onClick={() => setSelectedId(h.id)}>
+                <img src={h.img} alt="" />
+                <span className="rh-name">{h.localizedName}</span>
+                <span className="rh-meta">Pos {[...positionsOf.get(h.id)!].sort().join('/')} · {ratedCount(profiles[h.id])}/{ALL_KEYS.length} rated</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <div className="ratings-editor">
+          <div className="editor-head card">
+            <img src={hero.img} alt="" className="editor-portrait" />
+            <h3>{hero.localizedName}</h3>
+            <label className="damage-select">
+              Damage type
+              <select
+                aria-label="Damage type"
+                value={prof?.damageType ?? 'physical'}
+                onChange={(e) => setDamageType(hero.id, e.target.value as DamageType)}
+              >
+                {DAMAGE.map((d) => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </label>
+            <div className="editor-nav">
+              <button type="button" aria-label="Previous hero" disabled={index === 0} onClick={() => setSelectedId(heroes[index - 1].id)}>← Prev</button>
+              <button type="button" aria-label="Next hero" disabled={index === heroes.length - 1} onClick={() => setSelectedId(heroes[index + 1].id)}>Next →</button>
+            </div>
+          </div>
+          <p className="hint">0 = not at all · 1 = a little · 2 = good at it · 3 = a core reason to pick this hero.</p>
+
+          {GROUPS.map((g) => (
+            <section key={g.title} className="card rating-group" aria-label={g.title}>
+              <h4>{g.title}</h4>
+              {g.note && <p className="hint">{g.note}</p>}
+              {g.keys.map((k) => (
+                <RatingRow
+                  key={k}
+                  label={TAG_LABELS[k]}
+                  definition={TAG_DEFINITIONS[k]}
+                  value={(prof?.ratings[k] ?? 0) as Rating}
+                  onChange={(r) => setRating(hero.id, k, r)}
+                />
               ))}
-              {PHASES.map((ph) => <th key={ph} className="tag" title={`Power ${ph}`}><span>{ph}</span></th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {heroes.map((h) => {
-              const prof = profiles[h.id];
-              return (
-                <tr key={h.id}>
-                  <th className="hero-col"><img src={h.img} alt="" />{h.localizedName}</th>
-                  {ALL_KEYS.map((k) => {
-                    const v = (prof?.ratings[k] ?? 0) as Rating;
-                    return (
-                      <Cell
-                        key={k}
-                        value={v}
-                        label={`${h.localizedName} ${TAG_LABELS[k]}`}
-                        onClick={() => setRating(h.id, k, next(v))}
-                      />
-                    );
-                  })}
-                  {PHASES.map((ph) => {
-                    const v = (prof?.power[ph] ?? 0) as Rating;
-                    return (
-                      <Cell
-                        key={ph}
-                        value={v}
-                        label={`${h.localizedName} Power ${ph}`}
-                        onClick={() => setPower(h.id, ph, next(v))}
-                      />
-                    );
-                  })}
-                  <td>
-                    <select
-                      aria-label={`${h.localizedName} damage type`}
-                      value={prof?.damageType ?? 'physical'}
-                      onChange={(e) => setDamageType(h.id, e.target.value as DamageType)}
-                    >
-                      {DAMAGE.map((d) => <option key={d} value={d}>{d}</option>)}
-                    </select>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+            </section>
+          ))}
+
+          <section className="card rating-group" aria-label="Power curve">
+            <h4>Power curve</h4>
+            <p className="hint">When is this hero strongest? Weighted by the chosen win condition.</p>
+            {PHASES.map((ph) => (
+              <RatingRow
+                key={ph.phase}
+                label={ph.label}
+                definition={ph.definition}
+                value={(prof?.power[ph.phase] ?? 0) as Rating}
+                onChange={(r) => setPower(hero.id, ph.phase, r)}
+              />
+            ))}
+          </section>
+        </div>
       </div>
     </div>
   );
