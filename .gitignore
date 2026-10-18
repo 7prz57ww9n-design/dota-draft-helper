@@ -2,3 +2,5 @@ node_modules/
 dist/
 .superpowers/
 *.log
+*.local
+.DS_Store
