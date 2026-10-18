@@ -154,3 +154,7 @@ button.rate { width: 30px; height: 26px; padding: 0; }
 .origin { margin-left: 8px; padding: 0 5px; border-radius: 3px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; vertical-align: middle; }
 .origin.default { color: var(--muted); border: 1px solid var(--border); }
 .origin.edited { color: #07111f; background: var(--ok); }
+.ratings-sidebar { position: sticky; top: 64px; display: flex; flex-direction: column; gap: 6px; }
+.ratings-sidebar .ratings-heroes { position: static; max-height: calc(100vh - 120px); }
+.ratings-search { width: 100%; }
+@media (max-width: 800px) { .ratings-sidebar { position: static; } }

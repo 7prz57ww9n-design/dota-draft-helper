@@ -46,6 +46,18 @@ describe('RatingsScreen', () => {
     expect(useStore.getState().profiles[axe.id]).toBeUndefined();
   });
 
+  test('search box filters the hero list; Enter opens the first match', () => {
+    render(<RatingsScreen />);
+    const search = screen.getByRole('searchbox', { name: 'Search heroes' });
+    fireEvent.change(search, { target: { value: 'pud' } });
+    const list = screen.getByRole('list', { name: 'Heroes to rate' });
+    expect(within(list).getAllByRole('button').map((b) => b.textContent)).toEqual([expect.stringContaining('Pudge')]);
+    fireEvent.keyDown(search, { key: 'Enter' });
+    expect(screen.getByRole('heading', { level: 3, name: 'Pudge' })).toBeInTheDocument();
+    fireEvent.change(search, { target: { value: 'zzz' } });
+    expect(screen.getByText(/no pool hero matches/i)).toBeInTheDocument();
+  });
+
   test('power curve and damage type are editable', () => {
     render(<RatingsScreen />);
     fireEvent.click(within(tagRow('Mid game')).getByRole('radio', { name: /^2/ }));

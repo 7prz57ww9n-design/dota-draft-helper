@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { heroById, type HeroId } from '../data/heroes';
+import { heroById, searchHeroes, type HeroId } from '../data/heroes';
 import { defaultProfile, withDefaults } from '../data/ratingDefaults';
 import { ANSWER_TAGS, TAG_DEFINITIONS, TAG_LABELS } from '../domain/tags';
 import type { DamageType, HeroProfile, Phase, Rating, RatingKey } from '../domain/types';
@@ -66,6 +66,7 @@ export default function RatingsScreen() {
   const resetProfile = useStore((s) => s.resetProfile);
   const effective = withDefaults(profiles);
   const [selectedId, setSelectedId] = useState<HeroId | null>(null);
+  const [query, setQuery] = useState('');
 
   const positionsOf = new Map<HeroId, number[]>();
   for (const p of players) {
@@ -87,6 +88,9 @@ export default function RatingsScreen() {
 
   const index = Math.max(0, heroes.findIndex((h) => h.id === selectedId));
   const hero = heroes[index];
+  // Same matching as the other hero pickers (prefix, initials, substring), limited to our pools.
+  const q = query.trim();
+  const shown = q ? searchHeroes(q, 200).filter((h) => positionsOf.has(h.id)) : heroes;
   const stored = profiles[hero.id];
   const prof = effective[hero.id] ?? defaultProfile(hero.id);
 
@@ -94,17 +98,32 @@ export default function RatingsScreen() {
     <div className="screen">
       <h2>Ratings</h2>
       <div className="ratings-layout">
-        <ul className="ratings-heroes" aria-label="Heroes to rate">
-          {heroes.map((h, i) => (
-            <li key={h.id}>
-              <button type="button" className={i === index ? 'active' : ''} aria-current={i === index} onClick={() => setSelectedId(h.id)}>
-                <img src={h.img} alt="" />
-                <span className="rh-name">{h.localizedName}</span>
-                <span className="rh-meta">Pos {[...positionsOf.get(h.id)!].sort().join('/')} · {ratedCount(effective[h.id])}/{ALL_KEYS.length} tags{profiles[h.id] ? ' · edited' : ''}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="ratings-sidebar">
+          <input
+            type="search"
+            className="ratings-search"
+            aria-label="Search heroes"
+            placeholder="Search heroes…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && shown[0]) setSelectedId(shown[0].id);
+              if (e.key === 'Escape') setQuery('');
+            }}
+          />
+          {shown.length === 0 && <p className="empty">No pool hero matches “{q}”.</p>}
+          <ul className="ratings-heroes" aria-label="Heroes to rate">
+            {shown.map((h) => (
+              <li key={h.id}>
+                <button type="button" className={h.id === hero.id ? 'active' : ''} aria-current={h.id === hero.id} onClick={() => setSelectedId(h.id)}>
+                  <img src={h.img} alt="" />
+                  <span className="rh-name">{h.localizedName}</span>
+                  <span className="rh-meta">Pos {[...positionsOf.get(h.id)!].sort().join('/')} · {ratedCount(effective[h.id])}/{ALL_KEYS.length} tags{profiles[h.id] ? ' · edited' : ''}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <div className="ratings-editor">
           <div className="editor-head card">

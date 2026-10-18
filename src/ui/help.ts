@@ -99,7 +99,7 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
       {
         heading: 'How to rate',
         items: [
-          'Choose a hero on the left (or use Prev / Next), then click 0–3 on each row: 0 = not at all, 1 = a little, 2 = good at it, 3 = a core reason to pick this hero.',
+          'Choose a hero on the left (type in the search box to find one quickly, Enter opens the first match, or use Prev / Next), then click 0–3 on each row: 0 = not at all, 1 = a little, 2 = good at it, 3 = a core reason to pick this hero.',
           'Every hero starts with default ratings pre-filled from its kit (e.g. Ancient Apparition: Heal reduction 3), marked "default". Clicking a value makes it "edited"; "Reset to defaults" discards our edits for that hero.',
           'Each row explains what the tag means. The hero list shows how many tags each hero has and whether we edited it.',
           'Ratings belong to the hero, not the player: Tidehunter\'s initiation is the same whoever plays him. Player comfort is set on the Team page.',
