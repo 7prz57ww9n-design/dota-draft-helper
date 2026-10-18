@@ -1,5 +1,5 @@
 import { heroById } from '../data/heroes';
-import { ANSWER_TAGS, TAG_LABELS } from '../domain/tags';
+import { ANSWER_TAGS, TAG_DEFINITIONS, TAG_LABELS } from '../domain/tags';
 import type { DamageType, Phase, Rating, RatingKey } from '../domain/types';
 import { useStore } from '../store/store';
 
@@ -61,7 +61,7 @@ export default function RatingsScreen() {
             </tr>
             <tr>
               {ALL_KEYS.map((k) => (
-                <th key={k} title={TAG_LABELS[k]} className="tag"><span>{TAG_LABELS[k]}</span></th>
+                <th key={k} title={TAG_DEFINITIONS[k]} className="tag"><span>{TAG_LABELS[k]}</span></th>
               ))}
               {PHASES.map((ph) => <th key={ph} className="tag" title={`Power ${ph}`}><span>{ph}</span></th>)}
             </tr>

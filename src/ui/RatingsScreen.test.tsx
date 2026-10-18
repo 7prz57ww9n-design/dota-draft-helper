@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { HEROES } from '../data/heroes';
+import { TAG_DEFINITIONS } from '../domain/tags';
 import { initialState, useStore } from '../store/store';
 import RatingsScreen from './RatingsScreen';
 
@@ -39,5 +40,11 @@ describe('RatingsScreen', () => {
     expect(useStore.getState().profiles[pudge.id].power.mid).toBe(1);
     fireEvent.change(screen.getByLabelText('Pudge damage type'), { target: { value: 'magical' } });
     expect(useStore.getState().profiles[pudge.id].damageType).toBe('magical');
+  });
+
+  test('tag header tooltip is the definition', () => {
+    render(<RatingsScreen />);
+    const th = screen.getByText('Waveclear').closest('th')!;
+    expect(th.getAttribute('title')).toBe(TAG_DEFINITIONS.waveclear);
   });
 });

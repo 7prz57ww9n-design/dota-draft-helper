@@ -41,4 +41,24 @@ describe('HeroPicker', () => {
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'pudge' } });
     expect(screen.queryAllByRole('option')).toHaveLength(0);
   });
+
+  test('closes the list on blur', () => {
+    render(<HeroPicker onSelect={() => {}} />);
+    const input = screen.getByRole('combobox');
+    fireEvent.change(input, { target: { value: 'pud' } });
+    expect(screen.getByRole('listbox')).toBeTruthy();
+    fireEvent.blur(input);
+    expect(screen.queryByRole('listbox')).toBeNull();
+  });
+
+  test('instances use unique ids and set aria-activedescendant', () => {
+    render(<><HeroPicker onSelect={() => {}} /><HeroPicker onSelect={() => {}} /></>);
+    const [a, b] = screen.getAllByRole('combobox');
+    fireEvent.change(a, { target: { value: 'pud' } });
+    fireEvent.change(b, { target: { value: 'pud' } });
+    const lists = screen.getAllByRole('listbox');
+    expect(lists[0].id).not.toBe(lists[1].id);
+    const opt = screen.getAllByRole('option')[0];
+    expect(a.getAttribute('aria-activedescendant')).toBe(opt.id);
+  });
 });

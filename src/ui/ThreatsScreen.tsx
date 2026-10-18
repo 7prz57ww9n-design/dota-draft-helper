@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { HEROES } from '../data/heroes';
-import { THREATS, THREAT_LABELS } from '../domain/tags';
+import { THREATS, THREAT_DEFINITIONS, THREAT_LABELS } from '../domain/tags';
 import { useStore } from '../store/store';
 
 const SORTED = [...HEROES].sort((a, b) => a.localizedName.localeCompare(b.localizedName));
@@ -30,7 +30,7 @@ export default function ThreatsScreen() {
           <thead>
             <tr>
               <th className="hero-col">Hero</th>
-              {THREATS.map((t) => <th key={t}>{THREAT_LABELS[t]}</th>)}
+              {THREATS.map((t) => <th key={t} title={THREAT_DEFINITIONS[t]}>{THREAT_LABELS[t]}</th>)}
               <th>Watch</th>
             </tr>
           </thead>
