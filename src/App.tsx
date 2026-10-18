@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import DataScreen from './ui/DataScreen';
+import DraftScreen from './ui/DraftScreen';
 import RatingsScreen from './ui/RatingsScreen';
 import SynergyScreen from './ui/SynergyScreen';
 import TeamScreen from './ui/TeamScreen';
@@ -29,7 +30,7 @@ export default function App() {
         </nav>
       </header>
       <main>
-        {tab === 'Draft' && <p>Draft screen coming in Task 9</p>}
+        {tab === 'Draft' && <DraftScreen />}
         {tab === 'Team' && <TeamScreen />}
         {tab === 'Ratings' && <RatingsScreen />}
         {tab === 'Threats' && <ThreatsScreen />}
