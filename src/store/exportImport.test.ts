@@ -3,7 +3,8 @@ import { initialState, useStore } from './store';
 
 beforeEach(() => {
   localStorage.clear();
-  useStore.setState(initialState);
+  // Start from empty threats so toggles below don't depend on the seed file's contents.
+  useStore.setState({ ...initialState, threats: {} });
 });
 
 function populate() {
