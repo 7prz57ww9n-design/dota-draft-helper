@@ -1,6 +1,7 @@
 import type { HeroId } from './heroes';
 import seed from './ratings.seed.json';
-import type { DamageType, HeroProfile, Rating, RatingKey } from '../domain/types';
+import { profileKey, type ProfileSource } from '../domain/profiles';
+import type { DamageType, HeroProfile, Position, Rating, RatingKey } from '../domain/types';
 
 interface SeedEntry { ratings: Partial<Record<RatingKey, Rating>>; power: HeroProfile['power']; damageType: DamageType }
 
@@ -14,14 +15,16 @@ export function defaultProfile(heroId: HeroId): HeroProfile {
 }
 
 /**
- * Merges the team's stored edits over the defaults. Stored ratings are
- * overrides (an explicit 0 counts); power and damage type are stored whole.
+ * The ratings in effect for a hero at a position: the team's stored edits for
+ * that position over the hero's defaults. Stored ratings are overrides (an
+ * explicit 0 counts); power and damage type are stored whole.
  */
-export function withDefaults(profiles: Record<HeroId, HeroProfile>): Record<HeroId, HeroProfile> {
-  const merged: Record<HeroId, HeroProfile> = { ...DEFAULT_PROFILES };
-  for (const [id, p] of Object.entries(profiles)) {
-    const d = defaultProfile(Number(id));
-    merged[Number(id)] = { ...p, ratings: { ...d.ratings, ...p.ratings } };
-  }
-  return merged;
+export function effectiveProfile(stored: Record<string, HeroProfile>, heroId: HeroId, position: Position): HeroProfile {
+  const d = defaultProfile(heroId);
+  const p = stored[profileKey(heroId, position)];
+  return p ? { ...p, ratings: { ...d.ratings, ...p.ratings } } : d;
+}
+
+export function makeProfileSource(stored: Record<string, HeroProfile>): ProfileSource {
+  return (heroId, position) => effectiveProfile(stored, heroId, position);
 }

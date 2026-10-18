@@ -2,7 +2,7 @@ import { computeCoverage } from './coverage';
 import { suggestPicks } from './suggestPicks';
 import {
   AXE, CRYSTAL_MAIDEN, JUGGERNAUT, LION, MAGNUS, NAGA_SIREN, PHANTOM_LANCER, SVEN, TIDEHUNTER,
-  makeContext, player, profile, profilesOf,
+  makeContext, player, profile, profilesAt, profilesOf,
 } from './testFixtures';
 
 const find = (s: ReturnType<typeof suggestPicks>, id: number) => s.top.find((x) => x.heroId === id);
@@ -13,7 +13,7 @@ describe('suggestPicks', () => {
   it('prefers missing must-have', () => {
     const ctx = makeContext({
       players: [player(1, [AXE, SVEN])],
-      profiles: profilesOf(profile(AXE, { waveclear: 3 }), profile(SVEN, { burst: 3 })),
+      profileOf: profilesOf(profile(AXE, { waveclear: 3 }), profile(SVEN, { burst: 3 })),
     });
     const s = suggestPicks(ctx);
     expect(s.top[0].heroId).toBe(AXE);
@@ -24,7 +24,7 @@ describe('suggestPicks', () => {
   it('saturates once coverage meets target', () => {
     const ctx = makeContext({
       players: [player(1, [SVEN]), player(2, [AXE]), player(3, [JUGGERNAUT])],
-      profiles: profilesOf(
+      profileOf: profilesOf(
         profile(AXE, { waveclear: 3 }),
         profile(JUGGERNAUT, { waveclear: 3 }, 'magical'),
         profile(SVEN, { waveclear: 3 }),
@@ -39,7 +39,7 @@ describe('suggestPicks', () => {
   it('enemy threat boosts answer', () => {
     const ctx = makeContext({
       players: [player(1, [SVEN])],
-      profiles: profilesOf(profile(SVEN, { aoeDamage: 3 })),
+      profileOf: profilesOf(profile(SVEN, { aoeDamage: 3 })),
       threats: { [PHANTOM_LANCER]: ['illusions'], [NAGA_SIREN]: ['illusions'] },
       enemyPicks: [PHANTOM_LANCER, NAGA_SIREN],
     });
@@ -55,27 +55,57 @@ describe('suggestPicks', () => {
     const score = (comfort: 1 | 3) =>
       suggestPicks(makeContext({
         players: [player(1, [{ heroId: SVEN, comfort }])],
-        profiles: profilesOf(profile(SVEN)),
+        profileOf: profilesOf(profile(SVEN)),
       })).top[0].score;
     expect(score(3) - score(1)).toBe(4);
   });
 
-  it('uses best comfort among open-position players with the hero', () => {
+  it('scores each position with that player\'s comfort; top shows the best position plus alternatives', () => {
     const ctx = makeContext({
       players: [
         player(1, [{ heroId: SVEN, comfort: 1 }]),
         player(2, [{ heroId: SVEN, comfort: 3 }]),
       ],
     });
-    const s = suggestPicks(ctx).top[0];
-    expect(reason(s, 'Comfort')!.points).toBe(2);
-    expect(s.positions).toEqual([1, 2]);
+    const { top, bestByPosition } = suggestPicks(ctx);
+    expect(top).toHaveLength(1);
+    expect(top[0].positions).toEqual([2]);
+    expect(reason(top[0], 'Comfort')!.points).toBe(2);
+    expect(top[0].alternatives).toEqual([{ position: 1, score: top[0].score - 4 }]);
+    expect(reason(bestByPosition[1]!, 'Comfort')!.points).toBe(-2);
+  });
+
+  it('uses the ratings for the position a hero would be played at', () => {
+    const ctx = makeContext({
+      players: [player(1, [AXE]), player(4, [AXE])],
+      profileOf: profilesAt([1, profile(AXE, { push: 3 })], [4, profile(AXE, { disable: 3, save: 2 })]),
+    });
+    const { top, bestByPosition } = suggestPicks(ctx);
+    expect(reason(bestByPosition[1]!, 'Push')).toBeDefined();
+    expect(reason(bestByPosition[1]!, 'Disable')).toBeUndefined();
+    expect(reason(bestByPosition[4]!, 'Disable')).toBeDefined();
+    expect(reason(bestByPosition[4]!, 'Push')).toBeUndefined();
+    expect(top[0].positions).toEqual([4]); // disable 6 + save 2 beats push 6
+  });
+
+  it('counts a picked hero with the ratings of the position it was picked at', () => {
+    const ctx = makeContext({
+      players: [player(1, [SVEN]), player(4, [AXE])],
+      profileOf: profilesAt(
+        [1, profile(AXE, { waveclear: 3 })], [4, profile(AXE, { disable: 3 })],
+        [1, profile(SVEN, { waveclear: 3, disable: 3 })],
+      ),
+      ourPicks: [{ heroId: AXE, position: 4 }],
+    });
+    const sven = find(suggestPicks(ctx), SVEN)!;
+    expect(reason(sven, 'Waveclear')!.points).toBe(6); // Axe at pos 4 has no waveclear: full gap
+    expect(reason(sven, 'Disable')!.points).toBe(6); // target 6 − Axe's 3 = gap 3, ×2 must-have
   });
 
   it('synergy and lane duo', () => {
     const ctx = makeContext({
       players: [player(1, [SVEN]), player(4, [MAGNUS])],
-      profiles: profilesOf(profile(SVEN), profile(MAGNUS)),
+      profileOf: profilesOf(profile(SVEN), profile(MAGNUS)),
       synergies: [{ a: SVEN, b: MAGNUS, strength: 2, laneDuo: true }],
       ourPicks: [{ heroId: MAGNUS, position: 4 }],
     });
@@ -88,7 +118,7 @@ describe('suggestPicks', () => {
   it('emits one synergy reason per partner and omits zero strength', () => {
     const ctx = makeContext({
       players: [player(1, [SVEN]), player(4, [MAGNUS]), player(3, [AXE]), player(5, [LION])],
-      profiles: profilesOf(profile(SVEN), profile(MAGNUS), profile(AXE), profile(LION, {}, 'magical')),
+      profileOf: profilesOf(profile(SVEN), profile(MAGNUS), profile(AXE), profile(LION, {}, 'magical')),
       synergies: [
         { a: SVEN, b: MAGNUS, strength: 2, laneDuo: false },
         { a: SVEN, b: AXE, strength: 1, laneDuo: false },
@@ -121,10 +151,10 @@ describe('suggestPicks', () => {
     const profiles = profilesOf(profile(MAGNUS, { setup: 3 }), profile(SVEN, { followUp: 2 }));
     const ctx = makeContext({
       players: [player(1, [SVEN]), player(3, [MAGNUS])],
-      profiles,
+      profileOf: profiles,
       ourPicks: [{ heroId: MAGNUS, position: 3 }],
     });
-    expect(computeCoverage([MAGNUS], profiles).setup).toBe(3);
+    expect(computeCoverage([profiles(MAGNUS, 3)]).setup).toBe(3);
     const s = find(suggestPicks(ctx), SVEN)!;
     expect(reason(s, 'Combo')!.points).toBe(2);
   });
@@ -132,11 +162,11 @@ describe('suggestPicks', () => {
   it('flex only with fewer than 2 picks', () => {
     const players = [player(1, [AXE]), player(2, [AXE]), player(4, [SVEN]), player(5, [SVEN])];
     const profiles = profilesOf(profile(AXE), profile(SVEN, {}, 'magical'));
-    const zero = suggestPicks(makeContext({ players, profiles }));
+    const zero = suggestPicks(makeContext({ players, profileOf: profiles }));
     expect(reason(find(zero, SVEN), 'Flex')!.points).toBe(1);
     const two = suggestPicks(makeContext({
       players: [...players, player(3, [JUGGERNAUT]), player(2, [LION])],
-      profiles,
+      profileOf: profiles,
       ourPicks: [{ heroId: JUGGERNAUT, position: 3 }, { heroId: LION, position: 2 }],
     }));
     expect(reason(find(two, SVEN), 'Flex')).toBeUndefined();
@@ -149,7 +179,7 @@ describe('suggestPicks', () => {
     );
     const ctx = makeContext({
       players: [player(1, [MAGNUS, SVEN])],
-      profiles,
+      profileOf: profiles,
       ourPicks: [{ heroId: CRYSTAL_MAIDEN, position: 5 }, { heroId: LION, position: 4 }],
     });
     const s = suggestPicks(ctx);
@@ -161,7 +191,7 @@ describe('suggestPicks', () => {
     const ctx = makeContext({
       players: [player(1, [SVEN])],
       ourPicks: [{ heroId: LION, position: 4 }, { heroId: MAGNUS, position: 3 }],
-      profiles: profilesOf(profile(LION, {}, 'magical'), profile(MAGNUS, {}, 'magical')),
+      profileOf: profilesOf(profile(LION, {}, 'magical'), profile(MAGNUS, {}, 'magical')),
     });
     expect(find(suggestPicks(ctx), SVEN)!.score).toBe(0);
   });
@@ -201,7 +231,7 @@ describe('suggestPicks', () => {
   it('sorts by score desc with heroId tie-break, limits, and sorts reasons by magnitude', () => {
     const ctx = makeContext({
       players: [player(1, [SVEN, AXE, LION, JUGGERNAUT])],
-      profiles: profilesOf(
+      profileOf: profilesOf(
         profile(SVEN, { burst: 1, waveclear: 3 }), profile(AXE), profile(LION), profile(JUGGERNAUT),
       ),
     });

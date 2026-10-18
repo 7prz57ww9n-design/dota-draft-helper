@@ -158,3 +158,7 @@ button.rate { width: 30px; height: 26px; padding: 0; }
 .ratings-sidebar .ratings-heroes { position: static; max-height: calc(100vh - 120px); }
 .ratings-search { width: 100%; }
 @media (max-width: 800px) { .ratings-sidebar { position: static; } }
+.editor-title { flex: 1; display: flex; flex-direction: column; }
+.editor-title h3 { flex: none; }
+.editor-pos { color: var(--muted); font-size: 12px; }
+.alternatives { font-size: 11px; padding: 0 8px 2px 54px; }

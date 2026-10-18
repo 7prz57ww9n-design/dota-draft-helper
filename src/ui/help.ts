@@ -20,7 +20,7 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
           'The line under the mode shows the expected step, e.g. "Step 8/24 — Our pick". Type a hero name and press Enter to record it.',
           'If the game went differently, click Our pick / Enemy pick / Our ban / Enemy ban to override just the next entry. Undo removes the last entry.',
           'When a hero fits more than one of our open positions, a prompt asks which one: press the position number, or Esc to cancel.',
-          'Clicking a suggestion records it straight away (pick suggestions as our pick, ban suggestions as our ban).',
+          'Clicking a suggestion records it straight away: pick suggestions as our pick at the position shown, ban suggestions as our ban.',
           'Captains Draft: first add the heroes available in this draft, then press Start draft. Suggestions only use those heroes.',
         ],
       },
@@ -32,7 +32,7 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
           'Power curve: early/mid/late ratings weighted by the win condition (e.g. Late scaling favours late heroes).',
           'Comfort: best (3) +2, good (2) 0, okay (1) −2.',
           'Synergy with heroes we already picked, +1 for a lane-duo partner, +2 for a setup + follow-up combo, +1 for a flex hero in our first two picks, −2 if every pick would deal the same damage type.',
-          'Open "Why …?" under a suggestion to see each part of its score.',
+          'Each pick suggestion is scored for one position. A hero in two open pools is shown at its best position, with "also Pos N: score" for the other. Open "Why …?" to see each part of the score.',
         ],
       },
       {
@@ -94,15 +94,15 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
     ],
   },
   Ratings: {
-    summary: 'Rate every hero in our pools 0–3 on each tag. These ratings drive the pick suggestions.',
+    summary: 'Rate every hero in our pools 0–3 on each tag, per position. These ratings drive the pick suggestions.',
     sections: [
       {
         heading: 'How to rate',
         items: [
           'Choose a hero on the left (type in the search box to find one quickly, Enter opens the first match, or use Prev / Next), then click 0–3 on each row: 0 = not at all, 1 = a little, 2 = good at it, 3 = a core reason to pick this hero.',
           'Every hero starts with default ratings pre-filled from its kit (e.g. Ancient Apparition: Heal reduction 3), marked "default". Clicking a value makes it "edited"; "Reset to defaults" discards our edits for that hero.',
-          'Each row explains what the tag means. The hero list shows how many tags each hero has and whether we edited it.',
-          'Ratings belong to the hero, not the player: Tidehunter\'s initiation is the same whoever plays him. Player comfort is set on the Team page.',
+          'Each row explains what the tag means. The hero list shows the position, how many tags the hero has and whether we edited it.',
+          'Ratings are per hero AND position: a hero in two pools (e.g. carry and support) is listed twice and rated separately, because the role changes what it does. "Copy from Pos N" starts one role from the other. Player comfort is set on the Team page.',
           'Rate together as a team so a "3" means the same thing for everyone.',
         ],
       },
@@ -184,7 +184,7 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
         heading: 'Export, import, reset',
         items: [
           'Export downloads one file with players, pools, ratings, threats, synergies and the watchlist (not the draft in progress).',
-          'Import loads such a file and replaces the current data. An invalid file shows an error and changes nothing.',
+          'Import loads such a file and replaces the current data. Files exported before ratings became per-position still import: each hero\'s ratings are copied to every position whose pool has it. An invalid file shows an error and changes nothing.',
           'Reset clears players, pools, ratings, synergies and the watchlist, and restores the default threat flags.',
         ],
       },

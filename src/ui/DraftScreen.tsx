@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { HEROES, heroById } from '../data/heroes';
 import type { HeroId } from '../data/heroes';
-import { withDefaults } from '../data/ratingDefaults';
+import { makeProfileSource } from '../data/ratingDefaults';
 import { computeCoverage, effectiveTargets, enemyThreatCounts } from '../domain/coverage';
 import { nextExpected, positionOptions, toContext } from '../domain/draft';
 import type { ActionKind, DraftMode, Side } from '../domain/draft';
@@ -54,8 +54,8 @@ function HeroChip({ heroId, onRemove }: { heroId: HeroId; onRemove?: () => void 
 }
 
 export default function DraftScreen() {
-  const { players, profiles: storedProfiles, threats, synergies, watchlist, draft } = useStore();
-  const profiles = useMemo(() => withDefaults(storedProfiles), [storedProfiles]);
+  const { players, profiles, threats, synergies, watchlist, draft } = useStore();
+  const profileOf = useMemo(() => makeProfileSource(profiles), [profiles]);
   const { draftApply, draftUndo, draftReset, setWeFirst, setAvailable, setWin } = useStore.getState();
 
   const [override, setOverride] = useState<Current | null>(null);
@@ -79,8 +79,8 @@ export default function DraftScreen() {
     && (draft.available === null || editingAvail);
 
   const derived = useMemo(() => {
-    const ctx = toContext(draft, { players, profiles, threats, synergies });
-    const ourIds = ctx.ourPicks.map((p) => p.heroId);
+    const ctx = toContext(draft, { players, profileOf, threats, synergies });
+    const ourProfiles = ctx.ourPicks.map((p) => profileOf(p.heroId, p.position));
     const picks = suggestPicks(ctx, 5);
     const bans = suggestBans(ctx, watchlist, 5);
     const { targets, threatBoosted } = effectiveTargets(draft.win, enemyThreatCounts(ctx.enemyPicks, threats));
@@ -90,10 +90,10 @@ export default function DraftScreen() {
       bans,
       targets,
       threatBoosted,
-      coverage: computeCoverage(ourIds, profiles),
-      lean: inferWinCondition(ourIds, profiles)?.[0]?.win ?? null,
+      coverage: computeCoverage(ourProfiles),
+      lean: inferWinCondition(ourProfiles)?.[0]?.win ?? null,
     };
-  }, [draft, players, profiles, threats, synergies, watchlist]);
+  }, [draft, players, profileOf, threats, synergies, watchlist]);
   const { ctx } = derived;
 
   const exclude = useMemo(() => {
@@ -267,7 +267,16 @@ export default function DraftScreen() {
             <>
               <div className="card" data-testid="pick-suggestions">
                 <h3>Pick suggestions</h3>
-                <SuggestionList items={derived.picks.top} onPick={pickOurs} emptyText="No pick suggestions" />
+                <SuggestionList
+                  items={derived.picks.top}
+                  // Each suggestion is scored for one position, so record the pick there.
+                  onPick={(id) => {
+                    const s = derived.picks.top.find((x) => x.heroId === id);
+                    if (s) dispatch(id, { side: 'us', kind: 'pick' }, s.positions[0]);
+                    else pickOurs(id);
+                  }}
+                  emptyText="No pick suggestions"
+                />
                 <h4>Best per position</h4>
                 <ul className="suggestions">
                   {openPositions.map((p) => {

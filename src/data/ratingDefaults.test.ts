@@ -1,4 +1,4 @@
-import { DEFAULT_PROFILES, defaultProfile, withDefaults } from './ratingDefaults';
+import { DEFAULT_PROFILES, defaultProfile, effectiveProfile, makeProfileSource } from './ratingDefaults';
 import { HEROES } from './heroes';
 
 const aa = HEROES.find((h) => h.localizedName === 'Ancient Apparition')!.id;
@@ -9,18 +9,17 @@ describe('rating defaults', () => {
     expect(defaultProfile(aa).ratings.healReduction).toBe(3);
   });
 
-  test('stored edits override defaults, including an explicit 0', () => {
-    const merged = withDefaults({
-      [aa]: { heroId: aa, ratings: { healReduction: 0, push: 2 }, power: { early: 1, mid: 1, late: 1 }, damageType: 'pure' },
-    });
-    expect(merged[aa].ratings.healReduction).toBe(0);
-    expect(merged[aa].ratings.push).toBe(2);
-    expect(merged[aa].ratings.aoeDamage).toBe(defaultProfile(aa).ratings.aoeDamage);
-    expect(merged[aa].power).toEqual({ early: 1, mid: 1, late: 1 });
-    expect(merged[aa].damageType).toBe('pure');
-  });
-
-  test('heroes without edits get their defaults', () => {
-    expect(withDefaults({})[aa]).toEqual(DEFAULT_PROFILES[aa]);
+  test('stored edits for a position override defaults, including an explicit 0', () => {
+    const stored = {
+      [`${aa}@4`]: { heroId: aa, ratings: { healReduction: 0 as const, push: 2 as const }, power: { early: 1, mid: 1, late: 1 } as const, damageType: 'pure' as const },
+    };
+    const atPos4 = effectiveProfile(stored, aa, 4);
+    expect(atPos4.ratings.healReduction).toBe(0);
+    expect(atPos4.ratings.push).toBe(2);
+    expect(atPos4.ratings.aoeDamage).toBe(defaultProfile(aa).ratings.aoeDamage);
+    expect(atPos4.power).toEqual({ early: 1, mid: 1, late: 1 });
+    expect(atPos4.damageType).toBe('pure');
+    // Other positions are unaffected.
+    expect(makeProfileSource(stored)(aa, 5)).toEqual(DEFAULT_PROFILES[aa]);
   });
 });

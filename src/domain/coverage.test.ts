@@ -12,13 +12,13 @@ const counts = (o: Partial<Record<Threat, number>>) =>
 describe('computeCoverage', () => {
   it('sums ratings across picks', () => {
     const profiles = { 1: prof(1, { waveclear: 2 }), 2: prof(2, { waveclear: 3, burst: 1 }) };
-    const c = computeCoverage([1, 2], profiles);
+    const c = computeCoverage([profiles[1], profiles[2]]);
     expect(c.waveclear).toBe(5);
     expect(c.burst).toBe(1);
     expect(c.disable).toBe(0);
   });
   it('treats heroes without a profile as zeros', () => {
-    const c = computeCoverage([99], {});
+    const c = computeCoverage([undefined]);
     expect(Object.values(c).every((v) => v === 0)).toBe(true);
     expect(Object.keys(c)).toHaveLength(21);
   });

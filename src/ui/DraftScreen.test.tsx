@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { AXE, JUGGERNAUT, LION, MAGNUS, SVEN, player, profile, profilesOf } from '../domain/testFixtures';
+import { AXE, JUGGERNAUT, LION, MAGNUS, SVEN, player, profile } from '../domain/testFixtures';
 import { initialState, useStore } from '../store/store';
 import DraftScreen from './DraftScreen';
 
@@ -18,12 +18,13 @@ beforeEach(() => {
       player(3, [AXE]),
       player(4, [AXE, LION]),
     ],
-    profiles: profilesOf(
-      profile(JUGGERNAUT, { push: 2 }),
-      profile(SVEN, { push: 1 }),
-      profile(AXE, { initiation: 3 }),
-      profile(LION, { disable: 3 }),
-    ),
+    profiles: {
+      [`${JUGGERNAUT}@1`]: profile(JUGGERNAUT, { push: 2 }),
+      [`${SVEN}@1`]: profile(SVEN, { push: 1 }),
+      [`${AXE}@3`]: profile(AXE, { initiation: 3 }),
+      [`${AXE}@4`]: profile(AXE, { initiation: 3 }),
+      [`${LION}@4`]: profile(LION, { disable: 3 }),
+    },
   });
 });
 
@@ -124,7 +125,8 @@ describe('DraftScreen', () => {
     useStore.setState({ players: [player(1, [JUGGERNAUT]), player(4, [AXE]), player(5, [AXE])] });
     render(<DraftScreen />);
     const best = within(screen.getByTestId('pick-suggestions'));
-    fireEvent.click(best.getByText('Pos 5').closest('button')!);
+    const rows = best.getAllByText('Pos 5');
+    fireEvent.click(rows[rows.length - 1].closest('button')!); // the Best per position row (listed after the top picks)
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(useStore.getState().draft.actions).toEqual([
       { side: 'us', kind: 'pick', heroId: AXE, position: 5 },
@@ -156,5 +158,21 @@ describe('DraftScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: /undo/i }));
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(screen.getByRole('button', { name: 'Our pick' }).getAttribute('aria-pressed')).toBe('true');
+  });
+});
+
+describe('DraftScreen per-position suggestions', () => {
+  test('a top suggestion shows its other position and is picked at its best one', () => {
+    useStore.setState({
+      players: [player(4, [AXE]), player(5, [AXE])],
+      profiles: { [`${AXE}@4`]: profile(AXE, { disable: 3, save: 3 }) },
+    });
+    render(<DraftScreen />);
+    const top = within(screen.getByTestId('pick-suggestions')).getAllByRole('listitem')[0];
+    expect(top).toHaveTextContent('Pos 4');
+    expect(top).toHaveTextContent(/also Pos 5: /);
+    fireEvent.click(within(top).getByRole('button', { name: /Axe/ }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(useStore.getState().draft.actions).toEqual([{ side: 'us', kind: 'pick', heroId: AXE, position: 4 }]);
   });
 });

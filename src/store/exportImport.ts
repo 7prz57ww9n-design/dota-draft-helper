@@ -1,14 +1,16 @@
 import type { HeroId } from '../data/heroes';
+import { expandToPositions, parseProfileKey, profileKey } from '../domain/profiles';
 import { ANSWER_TAGS, TEAM_TAGS, THREATS } from '../domain/tags';
 import type {
   DamageType, HeroProfile, Phase, Player, PoolEntry, Position, Rating, RatingKey, SynergyPair, Threat,
 } from '../domain/types';
 import type { DataState } from './store';
 
+/** v2: profiles are keyed per hero and position ("7@4"). v1 files (one rating set per hero) still import. */
 export interface ExportFile {
-  schemaVersion: 1;
+  schemaVersion: 2;
   players: Player[];
-  profiles: Record<HeroId, HeroProfile>;
+  profiles: Record<string, HeroProfile>;
   threats: Record<HeroId, Threat[]>;
   synergies: SynergyPair[];
   watchlist: Record<HeroId, 1 | 2 | 3>;
@@ -25,7 +27,7 @@ export function exportData(
   state: Pick<DataState, 'players' | 'profiles' | 'threats' | 'synergies' | 'watchlist'>,
 ): ExportFile {
   const { players, profiles, threats, synergies, watchlist } = state;
-  return { schemaVersion: 1, players, profiles, threats, synergies, watchlist };
+  return { schemaVersion: 2, players, profiles, threats, synergies, watchlist };
 }
 
 const RATING_KEYS: readonly string[] = [...TEAM_TAGS, ...ANSWER_TAGS];
@@ -76,11 +78,13 @@ function parsePlayers(raw: unknown): Player[] {
   });
 }
 
-function parseProfiles(raw: unknown): Record<HeroId, HeroProfile> {
+function parseProfiles(raw: unknown, schemaVersion: 1 | 2, players: Player[]): Record<string, HeroProfile> {
   if (!isObject(raw)) throw new ImportError('profiles must be an object');
-  const out: Record<HeroId, HeroProfile> = {};
+  const out: Record<string, HeroProfile> = {};
   for (const [key, val] of Object.entries(raw)) {
-    const heroId = heroKey(key, 'profiles');
+    const at = schemaVersion === 2 ? parseProfileKey(key) : null;
+    if (schemaVersion === 2 && !at) throw new ImportError(`profiles has invalid key "${key}" (expected heroId@position)`);
+    const heroId = at ? at.heroId : heroKey(key, 'profiles');
     if (!isObject(val)) throw new ImportError(`Profile for hero ${heroId} must be an object`);
     if (!isObject(val.ratings)) throw new ImportError(`ratings for hero ${heroId} must be an object`);
     const ratings: Partial<Record<RatingKey, Rating>> = {};
@@ -105,9 +109,10 @@ function parseProfiles(raw: unknown): Record<HeroId, HeroProfile> {
         `damageType ${String(val.damageType)} for hero ${heroId} is not one of ${DAMAGE_TYPES.join(', ')}`,
       );
     }
-    out[heroId] = { heroId, ratings, power, damageType: val.damageType as DamageType };
+    const profile = { heroId, ratings, power, damageType: val.damageType as DamageType };
+    out[at ? profileKey(heroId, at.position) : heroId] = profile;
   }
-  return out;
+  return schemaVersion === 2 ? out : expandToPositions(out as Record<HeroId, HeroProfile>, players);
 }
 
 function parseThreats(raw: unknown): Record<HeroId, Threat[]> {
@@ -157,11 +162,14 @@ export function parseImport(json: string): ExportFile {
     throw new ImportError(`Invalid JSON: ${e instanceof Error ? e.message : String(e)}`);
   }
   if (!isObject(raw)) throw new ImportError('Import file must be a JSON object');
-  if (raw.schemaVersion !== 1) throw new ImportError(`Unsupported schemaVersion ${String(raw.schemaVersion)}`);
+  if (raw.schemaVersion !== 1 && raw.schemaVersion !== 2) {
+    throw new ImportError(`Unsupported schemaVersion ${String(raw.schemaVersion)}`);
+  }
+  const players = parsePlayers(raw.players);
   return {
-    schemaVersion: 1,
-    players: parsePlayers(raw.players),
-    profiles: parseProfiles(raw.profiles),
+    schemaVersion: 2,
+    players,
+    profiles: parseProfiles(raw.profiles, raw.schemaVersion, players),
     threats: parseThreats(raw.threats),
     synergies: parseSynergies(raw.synergies),
     watchlist: parseWatchlist(raw.watchlist),

@@ -9,13 +9,10 @@ function fill<K extends string, V>(keys: readonly K[], value: V): Record<K, V> {
   return Object.fromEntries(keys.map((k) => [k, value])) as Record<K, V>;
 }
 
-export function computeCoverage(
-  picks: HeroId[],
-  profiles: Record<HeroId, HeroProfile>,
-): Record<RatingKey, number> {
+/** Sums our picks' ratings per tag; each profile is resolved for the position it was picked at. */
+export function computeCoverage(picked: (HeroProfile | undefined)[]): Record<RatingKey, number> {
   const out = fill(RATING_KEYS, 0);
-  for (const id of picks) {
-    const p = profiles[id];
+  for (const p of picked) {
     if (!p) continue;
     for (const k of RATING_KEYS) out[k] += p.ratings[k] ?? 0;
   }

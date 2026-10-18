@@ -1,7 +1,8 @@
 import type { HeroId } from '../data/heroes';
 import { CM_SEQUENCE } from './draftOrder';
+import type { ProfileSource } from './profiles';
 import type { DraftContext } from './suggestPicks';
-import type { HeroProfile, Player, Position, SynergyPair, Threat, WinCondition } from './types';
+import type { Player, Position, SynergyPair, Threat, WinCondition } from './types';
 
 export type Side = 'us' | 'enemy';
 export type ActionKind = 'pick' | 'ban';
@@ -60,7 +61,7 @@ export function toContext(
   state: DraftState,
   data: {
     players: Player[];
-    profiles: Record<HeroId, HeroProfile>;
+    profileOf: ProfileSource;
     threats: Record<HeroId, Threat[]>;
     synergies: SynergyPair[];
   },

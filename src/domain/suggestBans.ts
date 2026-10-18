@@ -2,7 +2,7 @@ import { HEROES } from '../data/heroes';
 import type { HeroId } from '../data/heroes';
 import type { DraftContext } from './suggestPicks';
 import { THREAT_ANSWER, THREAT_LABELS } from './tags';
-import type { Reason } from './types';
+import type { Position, Reason, Threat } from './types';
 
 export function suggestBans(
   ctx: DraftContext,
@@ -13,22 +13,22 @@ export function suggestBans(
   const available = ctx.available ? new Set(ctx.available) : null;
   const filled = new Set(ctx.ourPicks.map((p) => p.position));
 
-  // Heroes that could still answer a threat: our picks plus pickable open-pool heroes.
-  const answerers = new Set<HeroId>(ctx.ourPicks.map((p) => p.heroId));
+  // Who could still answer a threat: our picks plus pickable open-pool heroes, each at its position.
+  const answerers: { heroId: HeroId; position: Position }[] = [...ctx.ourPicks];
   const ownPickable = new Set<HeroId>(); // we never suggest banning our own prospective picks
   for (const player of ctx.players) {
     if (filled.has(player.position)) continue;
     for (const entry of player.pool) {
       if (taken.has(entry.heroId)) continue;
       if (available && !available.has(entry.heroId)) continue;
-      answerers.add(entry.heroId);
+      answerers.push({ heroId: entry.heroId, position: player.position });
       ownPickable.add(entry.heroId);
     }
   }
-  const coverageOf = (threat: keyof typeof THREAT_ANSWER) => {
+  const coverageOf = (threat: Threat) => {
     const key = THREAT_ANSWER[threat];
     let best = 0;
-    for (const id of answerers) best = Math.max(best, ctx.profiles[id]?.ratings[key] ?? 0);
+    for (const a of answerers) best = Math.max(best, ctx.profileOf(a.heroId, a.position)?.ratings[key] ?? 0);
     return best;
   };
 

@@ -1,20 +1,18 @@
-import type { HeroId } from '../data/heroes';
 import type { HeroProfile, Phase, TeamTag, WinCondition } from './types';
 import { WIN_PROFILES } from './winConditions';
 
 const PHASES: Phase[] = ['early', 'mid', 'late'];
 const CANDIDATES: WinCondition[] = ['fightEarly', 'pickoff', 'lateScaling', 'splitPush'];
 
+/** ourPicks: our picked heroes' profiles, resolved for the positions they were picked at. */
 export function inferWinCondition(
-  ourPicks: HeroId[],
-  profiles: Record<HeroId, HeroProfile>,
+  ourPicks: (HeroProfile | undefined)[],
 ): { win: WinCondition; fit: number }[] | null {
   if (ourPicks.length < 2) return null;
 
   const coverage: Partial<Record<TeamTag, number>> = {};
   const meanPower: Record<Phase, number> = { early: 0, mid: 0, late: 0 };
-  for (const id of ourPicks) {
-    const p = profiles[id];
+  for (const p of ourPicks) {
     if (!p) continue;
     for (const [tag, rating] of Object.entries(p.ratings) as [TeamTag, number][]) {
       coverage[tag] = (coverage[tag] ?? 0) + rating;

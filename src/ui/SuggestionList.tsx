@@ -7,6 +7,8 @@ export interface SuggestionItem {
   score: number;
   reasons: Reason[];
   positions?: Position[];
+  /** The same hero scored for its other open positions. */
+  alternatives?: { position: Position; score: number }[];
 }
 
 export function formatPoints(n: number, signed = true): string {
@@ -33,6 +35,11 @@ export function SuggestionRow({ item, onPick }: { item: SuggestionItem; onPick: 
         {item.positions && <span className="muted">Pos {item.positions.join('/')}</span>}
         <span className="score">{formatPoints(item.score, false)}</span>
       </button>
+      {item.alternatives && item.alternatives.length > 0 && (
+        <div className="alternatives muted">
+          also {item.alternatives.map((a) => `Pos ${a.position}: ${formatPoints(a.score, false)}`).join(' · ')}
+        </div>
+      )}
       <details>
         <summary>Why {name}?</summary>
         <ul className="reasons">

@@ -4,16 +4,18 @@ import type { HeroId } from '../data/heroes';
 import { defaultProfile } from '../data/ratingDefaults';
 import threatsSeed from '../data/threats.seed.json';
 import { applyAction, undo } from '../domain/draft';
+import { expandToPositions, profileKey } from '../domain/profiles';
 import { ANSWER_TAGS, TEAM_TAGS, THREATS } from '../domain/tags';
 import type { DraftAction, DraftMode, DraftState } from '../domain/draft';
 import type {
-  DamageType, HeroProfile, Phase, Player, Rating, RatingKey, SynergyPair, Threat, WinCondition,
+  DamageType, HeroProfile, Phase, Player, Position, Rating, RatingKey, SynergyPair, Threat, WinCondition,
 } from '../domain/types';
 import type { ExportFile } from './exportImport';
 
 export interface DataState {
   players: Player[];
-  profiles: Record<HeroId, HeroProfile>;
+  /** The team's rating edits per hero and position, keyed by profileKey (e.g. "7@4"). */
+  profiles: Record<string, HeroProfile>;
   threats: Record<HeroId, Threat[]>;
   synergies: SynergyPair[];
   watchlist: Record<HeroId, 1 | 2 | 3>;
@@ -26,9 +28,9 @@ export interface Actions {
   addToPool: (playerId: string, heroId: HeroId) => void;
   removeFromPool: (playerId: string, heroId: HeroId) => void;
   setComfort: (playerId: string, heroId: HeroId, comfort: 1 | 2 | 3) => void;
-  setRating: (heroId: HeroId, key: RatingKey, rating: Rating) => void;
-  setPower: (heroId: HeroId, phase: Phase, rating: Rating) => void;
-  setDamageType: (heroId: HeroId, damageType: DamageType) => void;
+  setRating: (heroId: HeroId, position: Position, key: RatingKey, rating: Rating) => void;
+  setPower: (heroId: HeroId, position: Position, phase: Phase, rating: Rating) => void;
+  setDamageType: (heroId: HeroId, position: Position, damageType: DamageType) => void;
   toggleThreat: (heroId: HeroId, threat: Threat) => void;
   upsertSynergy: (pair: SynergyPair) => void;
   removeSynergy: (a: HeroId, b: HeroId) => void;
@@ -41,7 +43,9 @@ export interface Actions {
   setWin: (win: WinCondition) => void;
   importData: (data: ExportFile) => void;
   resetAll: () => void;
-  resetProfile: (heroId: HeroId) => void;
+  resetProfile: (heroId: HeroId, position: Position) => void;
+  /** Makes the hero's ratings at 'to' the same as at 'from' (edits or defaults). */
+  copyProfile: (heroId: HeroId, from: Position, to: Position) => void;
 }
 
 export type StoreState = DataState & Actions;
@@ -65,9 +69,9 @@ export const initialState: DataState = {
   draft: freshDraft('captainsMode', true),
 };
 
-function profileOf(profiles: Record<HeroId, HeroProfile>, heroId: HeroId): HeroProfile {
+function profileOf(profiles: Record<string, HeroProfile>, heroId: HeroId, position: Position): HeroProfile {
   // A new edit starts from the default power curve and damage type; ratings hold only the edits.
-  return profiles[heroId] ?? { ...defaultProfile(heroId), ratings: {} };
+  return profiles[profileKey(heroId, position)] ?? { ...defaultProfile(heroId), ratings: {} };
 }
 
 const RATING_KEYS = new Set<string>([...TEAM_TAGS, ...ANSWER_TAGS]);
@@ -77,14 +81,16 @@ const THREAT_SET = new Set<string>(THREATS);
  * Upgrades data saved by older app versions. v0 → v1: six answer tags
  * (armor reduction, AoE/cleave, detection, true strike, instant disable,
  * magic resistance) and two threats (invisibility, evasion) were removed.
+ * v1 → v2: ratings are stored per hero and position instead of per hero.
  */
-export function migratePersisted(persisted: unknown, _version: number): DataState {
+export function migratePersisted(persisted: unknown, version: number): DataState {
   const s = persisted as DataState;
-  const profiles: Record<HeroId, HeroProfile> = {};
-  for (const [id, p] of Object.entries(s.profiles ?? {})) {
+  let profiles: Record<string, HeroProfile> = {};
+  for (const [key, p] of Object.entries(s.profiles ?? {})) {
     const ratings = Object.fromEntries(Object.entries(p.ratings).filter(([k]) => RATING_KEYS.has(k)));
-    profiles[Number(id)] = { ...p, ratings };
+    profiles[key] = { ...p, ratings };
   }
+  if (version < 2) profiles = expandToPositions(profiles as unknown as Record<HeroId, HeroProfile>, s.players ?? []);
   const threats: Record<HeroId, Threat[]> = {};
   for (const [id, list] of Object.entries(s.threats ?? {})) {
     const kept = list.filter((t) => THREAT_SET.has(t));
@@ -101,8 +107,10 @@ export const useStore = create<StoreState>()(
     (set, get) => {
       const mapPlayer = (id: string, fn: (p: Player) => Player) =>
         set((s) => ({ players: s.players.map((p) => (p.id === id ? fn(p) : p)) }));
-      const patchProfile = (heroId: HeroId, fn: (p: HeroProfile) => HeroProfile) =>
-        set((s) => ({ profiles: { ...s.profiles, [heroId]: fn(profileOf(s.profiles, heroId)) } }));
+      const patchProfile = (heroId: HeroId, position: Position, fn: (p: HeroProfile) => HeroProfile) =>
+        set((s) => ({
+          profiles: { ...s.profiles, [profileKey(heroId, position)]: fn(profileOf(s.profiles, heroId, position)) },
+        }));
       return {
         ...initialState,
         upsertPlayer: (player) => set((s) => ({
@@ -120,13 +128,13 @@ export const useStore = create<StoreState>()(
         setComfort: (playerId, heroId, comfort) => mapPlayer(playerId, (p) => ({
           ...p, pool: p.pool.map((e) => (e.heroId === heroId ? { ...e, comfort } : e)),
         })),
-        setRating: (heroId, key, rating) => patchProfile(heroId, (p) => ({
+        setRating: (heroId, position, key, rating) => patchProfile(heroId, position, (p) => ({
           ...p, ratings: { ...p.ratings, [key]: rating },
         })),
-        setPower: (heroId, phase, rating) => patchProfile(heroId, (p) => ({
+        setPower: (heroId, position, phase, rating) => patchProfile(heroId, position, (p) => ({
           ...p, power: { ...p.power, [phase]: rating },
         })),
-        setDamageType: (heroId, damageType) => patchProfile(heroId, (p) => ({ ...p, damageType })),
+        setDamageType: (heroId, position, damageType) => patchProfile(heroId, position, (p) => ({ ...p, damageType })),
         toggleThreat: (heroId, threat) => set((s) => {
           const cur = s.threats[heroId] ?? [];
           const next = cur.includes(threat) ? cur.filter((t) => t !== threat) : [...cur, threat];
@@ -160,15 +168,21 @@ export const useStore = create<StoreState>()(
           synergies: data.synergies,
           watchlist: data.watchlist,
         }),
-        resetProfile: (heroId) => set((s) => {
-          const { [heroId]: _removed, ...rest } = s.profiles;
+        resetProfile: (heroId, position) => set((s) => {
+          const { [profileKey(heroId, position)]: _removed, ...rest } = s.profiles;
           return { profiles: rest };
+        }),
+        copyProfile: (heroId, from, to) => set((s) => {
+          const { [profileKey(heroId, to)]: _old, ...rest } = s.profiles;
+          const source = s.profiles[profileKey(heroId, from)];
+          if (!source) return { profiles: rest }; // 'from' uses defaults, so 'to' goes back to defaults too
+          return { profiles: { ...rest, [profileKey(heroId, to)]: { ...source, ratings: { ...source.ratings }, power: { ...source.power } } } };
         }),
         resetAll: () => set({
           players: [], profiles: {}, threats: seedThreats(), synergies: [], watchlist: {},
         }),
       };
     },
-    { name: 'dota-draft-helper', version: 1, migrate: migratePersisted },
+    { name: 'dota-draft-helper', version: 2, migrate: migratePersisted },
   ),
 );

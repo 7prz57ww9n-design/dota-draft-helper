@@ -88,14 +88,14 @@ describe('toContext', () => {
     s = applyAction(s, { side: 'us', kind: 'ban', heroId: SVEN });
     s = applyAction(s, { side: 'enemy', kind: 'ban', heroId: MAGNUS });
     const players = [player(4, [LION])];
-    const profiles = profilesOf(profile(LION));
-    const ctx = toContext(s, { players, profiles, threats: {}, synergies: [] });
+    const profileOf = profilesOf(profile(LION));
+    const ctx = toContext(s, { players, profileOf, threats: {}, synergies: [] });
     expect(ctx.ourPicks).toEqual([{ heroId: LION, position: 4 }]);
     expect(ctx.enemyPicks).toEqual([AXE]);
     expect(ctx.bans).toEqual([SVEN, MAGNUS]);
     expect(ctx.win).toBe('pickoff');
     expect(ctx.available).toEqual([AXE]);
     expect(ctx.players).toBe(players);
-    expect(ctx.profiles).toBe(profiles);
+    expect(ctx.profileOf).toBe(profileOf);
   });
 });

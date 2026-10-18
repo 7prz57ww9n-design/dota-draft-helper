@@ -1,15 +1,17 @@
 import { heroById } from '../data/heroes';
 import type { HeroId } from '../data/heroes';
 import { computeCoverage, effectiveTargets, enemyThreatCounts } from './coverage';
+import type { ProfileSource } from './profiles';
 import { ANSWER_TAGS, TAG_LABELS, TEAM_TAGS, THREAT_LABELS } from './tags';
 import type {
-  HeroProfile, Phase, Player, Position, RatingKey, Reason, SynergyPair, Threat, WinCondition,
+  Phase, Player, Position, RatingKey, Reason, SynergyPair, Threat, WinCondition,
 } from './types';
 import { WIN_PROFILES } from './winConditions';
 
 export interface DraftContext {
   players: Player[];
-  profiles: Record<HeroId, HeroProfile>;
+  /** Ratings of a hero as played at a position. */
+  profileOf: ProfileSource;
   threats: Record<HeroId, Threat[]>;
   synergies: SynergyPair[];
   win: WinCondition;
@@ -21,9 +23,12 @@ export interface DraftContext {
 
 export interface PickSuggestion {
   heroId: HeroId;
+  /** The position this suggestion is scored for. */
   positions: Position[];
   score: number;
   reasons: Reason[];
+  /** The same hero scored for its other open positions, best first. */
+  alternatives?: { position: Position; score: number }[];
 }
 
 const RATING_KEYS: RatingKey[] = [...TEAM_TAGS, ...ANSWER_TAGS];
@@ -42,34 +47,31 @@ export function suggestPicks(
 
   const taken = new Set<HeroId>([...ctx.ourPicks.map((p) => p.heroId), ...ctx.enemyPicks, ...ctx.bans]);
   const available = ctx.available ? new Set(ctx.available) : null;
-  const ourIds = ctx.ourPicks.map((p) => p.heroId);
-  const ourSet = new Set(ourIds);
+  const ourSet = new Set(ctx.ourPicks.map((p) => p.heroId));
+  const ourProfiles = ctx.ourPicks.map((p) => ctx.profileOf(p.heroId, p.position));
 
-  const coverage = computeCoverage(ourIds, ctx.profiles);
+  const coverage = computeCoverage(ourProfiles);
   const { targets, weights, threatBoosted } = effectiveTargets(
     ctx.win, enemyThreatCounts(ctx.enemyPicks, ctx.threats),
   );
   const mustHave = new Set<RatingKey>(WIN_PROFILES[ctx.win].mustHave);
   const powerWeights = WIN_PROFILES[ctx.win].power;
+  const allSameType = (type: string) => ourProfiles.every((p) => p && p.damageType === type);
 
-  const candidates = new Map<HeroId, { positions: Position[]; comfort: number }>();
+  // Every open position whose pool has the hero is a separate option.
+  const options = new Map<HeroId, { position: Position; comfort: number }[]>();
   for (const player of openPlayers) {
     for (const entry of player.pool) {
       if (taken.has(entry.heroId)) continue;
       if (available && !available.has(entry.heroId)) continue;
-      const c = candidates.get(entry.heroId) ?? { positions: [], comfort: 0 };
-      if (!c.positions.includes(player.position)) c.positions.push(player.position);
-      c.comfort = Math.max(c.comfort, entry.comfort);
-      candidates.set(entry.heroId, c);
+      const list = options.get(entry.heroId) ?? [];
+      if (!list.some((o) => o.position === player.position)) list.push({ position: player.position, comfort: entry.comfort });
+      options.set(entry.heroId, list);
     }
   }
 
-  const ourProfiles = ourIds.map((id) => ctx.profiles[id]);
-  const allSameType = (type: string) => ourProfiles.every((p) => p && p.damageType === type);
-
-  const suggestions: PickSuggestion[] = [];
-  for (const [heroId, c] of candidates) {
-    const profile = ctx.profiles[heroId];
+  const scoreOption = (heroId: HeroId, position: Position, comfort: number, flex: boolean): PickSuggestion => {
+    const profile = ctx.profileOf(heroId, position);
     const reasons: Reason[] = [];
     const add = (label: string, points: number) => {
       if (points !== 0) reasons.push({ label, points });
@@ -95,7 +97,7 @@ export function suggestPicks(
       add('Power curve', power);
     }
 
-    add('Comfort', (c.comfort - 2) * 2);
+    add('Comfort', (comfort - 2) * 2);
 
     let duos = 0;
     for (const pair of ctx.synergies) {
@@ -114,26 +116,37 @@ export function suggestPicks(
       add('Combo setup→follow-up', 2);
     }
 
-    if (ctx.ourPicks.length < 2) {
-      const pools = openPlayers.filter((p) => p.pool.some((e) => e.heroId === heroId)).length;
-      if (pools >= 2) add('Flex pick', 1);
-    }
+    if (flex) add('Flex pick', 1);
 
-    if (profile && ourIds.length >= 2 && allSameType(profile.damageType)) {
+    if (profile && ctx.ourPicks.length >= 2 && allSameType(profile.damageType)) {
       add(`All ${profile.damageType} damage`, -2);
     }
 
     reasons.sort((a, b) => Math.abs(b.points) - Math.abs(a.points));
     const score = reasons.reduce((sum, r) => sum + r.points, 0);
-    suggestions.push({ heroId, positions: c.positions.sort((a, b) => a - b), score, reasons });
-  }
+    return { heroId, positions: [position], score, reasons };
+  };
 
-  const better = (a: PickSuggestion, b: PickSuggestion) => b.score - a.score || a.heroId - b.heroId;
-  suggestions.sort(better);
+  const better = (a: PickSuggestion, b: PickSuggestion) =>
+    b.score - a.score || a.heroId - b.heroId || a.positions[0] - b.positions[0];
+
+  const all: PickSuggestion[] = []; // every (hero, position) option
+  const perHero: PickSuggestion[] = []; // each hero at its best position
+  for (const [heroId, opts] of options) {
+    const flex = ctx.ourPicks.length < 2 && opts.length >= 2;
+    const scored = opts.map((o) => scoreOption(heroId, o.position, o.comfort, flex)).sort(better);
+    all.push(...scored);
+    const [best, ...rest] = scored;
+    perHero.push(rest.length
+      ? { ...best, alternatives: rest.map((s) => ({ position: s.positions[0], score: s.score })) }
+      : best);
+  }
+  perHero.sort(better);
+  all.sort(better);
 
   const bestByPosition: Partial<Record<Position, PickSuggestion | null>> = {};
   for (const pos of openPositions) {
-    bestByPosition[pos] = suggestions.find((s) => s.positions.includes(pos)) ?? null;
+    bestByPosition[pos] = all.find((s) => s.positions[0] === pos) ?? null;
   }
-  return { top: suggestions.slice(0, limit), bestByPosition };
+  return { top: perHero.slice(0, limit), bestByPosition };
 }

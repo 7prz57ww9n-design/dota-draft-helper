@@ -10,7 +10,7 @@ beforeEach(() => {
 describe('DataScreen', () => {
   test('invalid import shows alert and leaves data untouched', async () => {
     render(<DataScreen />);
-    const file = new File(['{"schemaVersion":2}'], 'bad.json', { type: 'application/json' });
+    const file = new File(['{"schemaVersion":3}'], 'bad.json', { type: 'application/json' });
     fireEvent.change(screen.getByLabelText('Import JSON file'), { target: { files: [file] } });
     await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/schemaVersion/));
     expect(useStore.getState().players).toHaveLength(1);
@@ -27,7 +27,7 @@ describe('DataScreen', () => {
   test('export then reset then import restores the data', async () => {
     useStore.setState({
       players: [{ id: 'pos-1', name: 'A', position: 1, pool: [{ heroId: 14, comfort: 3 }] }],
-      profiles: { 14: { heroId: 14, ratings: { initiation: 2 }, power: { early: 1, mid: 2, late: 3 }, damageType: 'magical' } },
+      profiles: { '14@1': { heroId: 14, ratings: { initiation: 2 }, power: { early: 1, mid: 2, late: 3 }, damageType: 'magical' } },
       synergies: [{ a: 14, b: 1, strength: 2, laneDuo: true }],
       watchlist: { 14: 2 },
     });

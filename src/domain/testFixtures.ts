@@ -1,5 +1,6 @@
 import type { HeroId } from '../data/heroes';
 import type { DraftContext } from './suggestPicks';
+import { profileKey, type ProfileSource } from './profiles';
 import type { DamageType, HeroProfile, Phase, Player, PoolEntry, Position, Rating, RatingKey } from './types';
 
 // Real ids from heroes.json so localized names resolve.
@@ -22,8 +23,16 @@ export function profile(
   return { heroId, ratings, damageType, power: { early: 0, mid: 0, late: 0, ...power } };
 }
 
-export function profilesOf(...list: HeroProfile[]): Record<HeroId, HeroProfile> {
-  return Object.fromEntries(list.map((p) => [p.heroId, p]));
+/** Same ratings at every position. */
+export function profilesOf(...list: HeroProfile[]): ProfileSource {
+  const byHero = new Map(list.map((p) => [p.heroId, p]));
+  return (heroId) => byHero.get(heroId);
+}
+
+/** Different ratings per position: entries are [position, profile]. */
+export function profilesAt(...list: [Position, HeroProfile][]): ProfileSource {
+  const byKey = new Map(list.map(([pos, p]) => [profileKey(p.heroId, pos), p]));
+  return (heroId, position) => byKey.get(profileKey(heroId, position));
 }
 
 export function player(position: Position, pool: Array<HeroId | PoolEntry>): Player {
@@ -38,7 +47,7 @@ export function player(position: Position, pool: Array<HeroId | PoolEntry>): Pla
 export function makeContext(overrides: Partial<DraftContext> = {}): DraftContext {
   return {
     players: [],
-    profiles: {},
+    profileOf: () => undefined,
     threats: {},
     synergies: [],
     win: 'balanced',
