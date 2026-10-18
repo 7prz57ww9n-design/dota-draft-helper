@@ -151,3 +151,6 @@ button.rate { width: 30px; height: 26px; padding: 0; }
   .rating-row { flex-direction: column; align-items: stretch; }
   .scale-btn { flex: 1; min-width: 0; }
 }
+.origin { margin-left: 8px; padding: 0 5px; border-radius: 3px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; vertical-align: middle; }
+.origin.default { color: var(--muted); border: 1px solid var(--border); }
+.origin.edited { color: #07111f; background: var(--ok); }

@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { HeroId } from '../data/heroes';
+import { defaultProfile } from '../data/ratingDefaults';
 import threatsSeed from '../data/threats.seed.json';
 import { applyAction, undo } from '../domain/draft';
+import { ANSWER_TAGS, TEAM_TAGS, THREATS } from '../domain/tags';
 import type { DraftAction, DraftMode, DraftState } from '../domain/draft';
 import type {
   DamageType, HeroProfile, Phase, Player, Rating, RatingKey, SynergyPair, Threat, WinCondition,
@@ -39,6 +41,7 @@ export interface Actions {
   setWin: (win: WinCondition) => void;
   importData: (data: ExportFile) => void;
   resetAll: () => void;
+  resetProfile: (heroId: HeroId) => void;
 }
 
 export type StoreState = DataState & Actions;
@@ -63,9 +66,31 @@ export const initialState: DataState = {
 };
 
 function profileOf(profiles: Record<HeroId, HeroProfile>, heroId: HeroId): HeroProfile {
-  return profiles[heroId] ?? {
-    heroId, ratings: {}, power: { early: 0, mid: 0, late: 0 }, damageType: 'physical',
-  };
+  // A new edit starts from the default power curve and damage type; ratings hold only the edits.
+  return profiles[heroId] ?? { ...defaultProfile(heroId), ratings: {} };
+}
+
+const RATING_KEYS = new Set<string>([...TEAM_TAGS, ...ANSWER_TAGS]);
+const THREAT_SET = new Set<string>(THREATS);
+
+/**
+ * Upgrades data saved by older app versions. v0 → v1: six answer tags
+ * (armor reduction, AoE/cleave, detection, true strike, instant disable,
+ * magic resistance) and two threats (invisibility, evasion) were removed.
+ */
+export function migratePersisted(persisted: unknown, _version: number): DataState {
+  const s = persisted as DataState;
+  const profiles: Record<HeroId, HeroProfile> = {};
+  for (const [id, p] of Object.entries(s.profiles ?? {})) {
+    const ratings = Object.fromEntries(Object.entries(p.ratings).filter(([k]) => RATING_KEYS.has(k)));
+    profiles[Number(id)] = { ...p, ratings };
+  }
+  const threats: Record<HeroId, Threat[]> = {};
+  for (const [id, list] of Object.entries(s.threats ?? {})) {
+    const kept = list.filter((t) => THREAT_SET.has(t));
+    if (kept.length) threats[Number(id)] = kept;
+  }
+  return { ...s, profiles, threats };
 }
 
 const samePair = (p: SynergyPair, a: HeroId, b: HeroId) =>
@@ -135,11 +160,15 @@ export const useStore = create<StoreState>()(
           synergies: data.synergies,
           watchlist: data.watchlist,
         }),
+        resetProfile: (heroId) => set((s) => {
+          const { [heroId]: _removed, ...rest } = s.profiles;
+          return { profiles: rest };
+        }),
         resetAll: () => set({
           players: [], profiles: {}, threats: seedThreats(), synergies: [], watchlist: {},
         }),
       };
     },
-    { name: 'dota-draft-helper' },
+    { name: 'dota-draft-helper', version: 1, migrate: migratePersisted },
   ),
 );

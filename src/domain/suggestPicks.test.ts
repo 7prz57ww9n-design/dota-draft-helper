@@ -39,7 +39,7 @@ describe('suggestPicks', () => {
   it('enemy threat boosts answer', () => {
     const ctx = makeContext({
       players: [player(1, [SVEN])],
-      profiles: profilesOf(profile(SVEN, { aoeCleave: 3 })),
+      profiles: profilesOf(profile(SVEN, { aoeDamage: 3 })),
       threats: { [PHANTOM_LANCER]: ['illusions'], [NAGA_SIREN]: ['illusions'] },
       enemyPicks: [PHANTOM_LANCER, NAGA_SIREN],
     });

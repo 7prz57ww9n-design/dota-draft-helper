@@ -1,0 +1,1985 @@
+{
+  "1": {
+    "ratings": {
+      "splitPush": 3,
+      "sustainedDamage": 3,
+      "burst": 1,
+      "laning": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 2,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "2": {
+    "ratings": {
+      "initiation": 3,
+      "bkbPiercingDisable": 2,
+      "frontline": 3,
+      "disable": 2,
+      "laning": 2,
+      "waveclear": 1,
+      "pickoff": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "3": {
+    "ratings": {
+      "bkbPiercingDisable": 3,
+      "disable": 3,
+      "pickoff": 2,
+      "save": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "4": {
+    "ratings": {
+      "pickoff": 3,
+      "mapPressure": 2,
+      "setup": 2,
+      "sustainedDamage": 2,
+      "laning": 2,
+      "disable": 1,
+      "followUp": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "5": {
+    "ratings": {
+      "disable": 2,
+      "aoeDamage": 2,
+      "sustain": 1,
+      "laning": 2,
+      "followUp": 2,
+      "setup": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "6": {
+    "ratings": {
+      "sustainedDamage": 3,
+      "push": 2,
+      "disable": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 1,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "7": {
+    "ratings": {
+      "initiation": 3,
+      "setup": 3,
+      "aoeDamage": 3,
+      "disable": 2,
+      "counterInitiation": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "8": {
+    "ratings": {
+      "sustainedDamage": 3,
+      "sustain": 1,
+      "dispel": 1,
+      "splitPush": 2,
+      "laning": 2,
+      "earlyRoshan": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "9": {
+    "ratings": {
+      "pickoff": 2,
+      "disable": 2,
+      "mapPressure": 2,
+      "save": 1,
+      "burst": 1,
+      "laning": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "10": {
+    "ratings": {
+      "burst": 3,
+      "sustainedDamage": 2,
+      "splitPush": 1,
+      "laning": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 2,
+      "late": 3
+    },
+    "damageType": "pure"
+  },
+  "11": {
+    "ratings": {
+      "burst": 3,
+      "aoeDamage": 2,
+      "waveclear": 3,
+      "laning": 3,
+      "followUp": 2,
+      "sustainedDamage": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "12": {
+    "ratings": {
+      "sustainedDamage": 3,
+      "splitPush": 2,
+      "push": 2,
+      "laning": 1,
+      "burst": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 2,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "13": {
+    "ratings": {
+      "initiation": 2,
+      "setup": 2,
+      "disable": 2,
+      "mapPressure": 2,
+      "counterInitiation": 2,
+      "aoeDamage": 1,
+      "burst": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "14": {
+    "ratings": {
+      "pickoff": 3,
+      "bkbPiercingDisable": 2,
+      "frontline": 2,
+      "save": 1,
+      "mapPressure": 2,
+      "laning": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "15": {
+    "ratings": {
+      "sustainedDamage": 2,
+      "laning": 3,
+      "frontline": 2,
+      "push": 1,
+      "waveclear": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "16": {
+    "ratings": {
+      "initiation": 3,
+      "followUp": 3,
+      "aoeDamage": 3,
+      "disable": 2,
+      "waveclear": 2,
+      "laning": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "17": {
+    "ratings": {
+      "pickoff": 3,
+      "mapPressure": 3,
+      "burst": 2,
+      "disable": 2,
+      "initiation": 1,
+      "sustainedDamage": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "18": {
+    "ratings": {
+      "aoeDamage": 3,
+      "sustainedDamage": 3,
+      "disable": 2,
+      "initiation": 1,
+      "earlyRoshan": 1,
+      "frontline": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "19": {
+    "ratings": {
+      "initiation": 2,
+      "burst": 3,
+      "pickoff": 2,
+      "disable": 2,
+      "push": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "20": {
+    "ratings": {
+      "save": 3,
+      "pickoff": 2,
+      "disable": 2,
+      "laning": 2,
+      "push": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "21": {
+    "ratings": {
+      "disable": 2,
+      "pickoff": 2,
+      "sustainedDamage": 2,
+      "burst": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "22": {
+    "ratings": {
+      "burst": 2,
+      "followUp": 3,
+      "aoeDamage": 2,
+      "mapPressure": 3,
+      "laning": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "23": {
+    "ratings": {
+      "followUp": 3,
+      "aoeDamage": 2,
+      "setup": 2,
+      "counterInitiation": 2,
+      "frontline": 2,
+      "disable": 2,
+      "waveclear": 2,
+      "laning": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "25": {
+    "ratings": {
+      "followUp": 3,
+      "burst": 3,
+      "aoeDamage": 2,
+      "disable": 2,
+      "laning": 2,
+      "waveclear": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "26": {
+    "ratings": {
+      "pickoff": 3,
+      "disable": 3,
+      "burst": 3,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "27": {
+    "ratings": {
+      "disable": 3,
+      "push": 3,
+      "pickoff": 2,
+      "bkbPiercingDisable": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "28": {
+    "ratings": {
+      "initiation": 2,
+      "bkbPiercingDisable": 2,
+      "disable": 2,
+      "pickoff": 2,
+      "frontline": 2,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "29": {
+    "ratings": {
+      "initiation": 3,
+      "setup": 3,
+      "frontline": 3,
+      "dispel": 1,
+      "bkbPiercingDisable": 1,
+      "laning": 2,
+      "aoeDamage": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "30": {
+    "ratings": {
+      "sustain": 3,
+      "disable": 2,
+      "sustainedDamage": 2,
+      "aoeDamage": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "31": {
+    "ratings": {
+      "laning": 3,
+      "aoeDamage": 2,
+      "save": 1,
+      "followUp": 1,
+      "disable": 1,
+      "setup": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "32": {
+    "ratings": {
+      "pickoff": 3,
+      "sustainedDamage": 2,
+      "disable": 1,
+      "mapPressure": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "33": {
+    "ratings": {
+      "setup": 3,
+      "initiation": 3,
+      "bkbPiercingDisable": 3,
+      "push": 2,
+      "waveclear": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "34": {
+    "ratings": {
+      "splitPush": 3,
+      "waveclear": 3,
+      "mapPressure": 3,
+      "burst": 2,
+      "aoeDamage": 1,
+      "push": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "35": {
+    "ratings": {
+      "sustainedDamage": 3,
+      "laning": 2,
+      "aoeDamage": 1,
+      "waveclear": 1,
+      "push": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "36": {
+    "ratings": {
+      "sustain": 3,
+      "sustainedDamage": 2,
+      "burst": 2,
+      "frontline": 2,
+      "laning": 2,
+      "waveclear": 1,
+      "disable": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "37": {
+    "ratings": {
+      "sustain": 3,
+      "setup": 2,
+      "disable": 2,
+      "aoeDamage": 2,
+      "push": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "38": {
+    "ratings": {
+      "bkbPiercingDisable": 3,
+      "initiation": 2,
+      "push": 3,
+      "earlyRoshan": 2,
+      "mapPressure": 1,
+      "disable": 2,
+      "frontline": 1,
+      "pickoff": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "39": {
+    "ratings": {
+      "pickoff": 2,
+      "burst": 3,
+      "aoeDamage": 2,
+      "mapPressure": 2,
+      "followUp": 2,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "40": {
+    "ratings": {
+      "push": 2,
+      "waveclear": 2,
+      "laning": 2,
+      "sustainedDamage": 2,
+      "aoeDamage": 1,
+      "disable": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "41": {
+    "ratings": {
+      "setup": 3,
+      "bkbPiercingDisable": 3,
+      "counterInitiation": 3,
+      "sustainedDamage": 3,
+      "initiation": 2
+    },
+    "power": {
+      "early": 1,
+      "mid": 2,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "42": {
+    "ratings": {
+      "sustainedDamage": 2,
+      "frontline": 3,
+      "disable": 2,
+      "earlyRoshan": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 2,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "43": {
+    "ratings": {
+      "push": 3,
+      "aoeDamage": 2,
+      "sustainedDamage": 2,
+      "sustain": 1,
+      "waveclear": 2,
+      "disable": 1,
+      "frontline": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "44": {
+    "ratings": {
+      "burst": 3,
+      "sustainedDamage": 2,
+      "pickoff": 2,
+      "laning": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "45": {
+    "ratings": {
+      "push": 3,
+      "waveclear": 2,
+      "burst": 2,
+      "laning": 2,
+      "sustain": 1,
+      "save": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "46": {
+    "ratings": {
+      "burst": 3,
+      "pickoff": 2,
+      "push": 2,
+      "earlyRoshan": 2,
+      "laning": 3
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "47": {
+    "ratings": {
+      "laning": 3,
+      "sustainedDamage": 2,
+      "frontline": 2,
+      "disable": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "48": {
+    "ratings": {
+      "aoeDamage": 3,
+      "waveclear": 3,
+      "sustainedDamage": 2,
+      "push": 2,
+      "laning": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "magical"
+  },
+  "49": {
+    "ratings": {
+      "frontline": 3,
+      "push": 3,
+      "disable": 1,
+      "laning": 2,
+      "sustainedDamage": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "50": {
+    "ratings": {
+      "save": 3,
+      "sustain": 2,
+      "dispel": 1,
+      "counterInitiation": 2,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "51": {
+    "ratings": {
+      "initiation": 3,
+      "pickoff": 2,
+      "disable": 2,
+      "frontline": 2,
+      "mapPressure": 2,
+      "laning": 2,
+      "counterInitiation": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "52": {
+    "ratings": {
+      "followUp": 3,
+      "aoeDamage": 3,
+      "push": 3,
+      "waveclear": 3,
+      "disable": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "53": {
+    "ratings": {
+      "splitPush": 3,
+      "push": 3,
+      "mapPressure": 3,
+      "sustainedDamage": 1,
+      "disable": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "54": {
+    "ratings": {
+      "sustainedDamage": 3,
+      "dispel": 3,
+      "frontline": 2,
+      "earlyRoshan": 2,
+      "pickoff": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "55": {
+    "ratings": {
+      "setup": 2,
+      "save": 2,
+      "waveclear": 3,
+      "aoeDamage": 2,
+      "frontline": 1,
+      "laning": 2,
+      "counterInitiation": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "56": {
+    "ratings": {
+      "pickoff": 3,
+      "push": 3,
+      "sustainedDamage": 2,
+      "burst": 2,
+      "splitPush": 1,
+      "mapPressure": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "57": {
+    "ratings": {
+      "save": 3,
+      "sustain": 3,
+      "dispel": 2,
+      "frontline": 2,
+      "laning": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "pure"
+  },
+  "58": {
+    "ratings": {
+      "sustain": 2,
+      "earlyRoshan": 3,
+      "push": 2,
+      "sustainedDamage": 2,
+      "laning": 2,
+      "mapPressure": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "59": {
+    "ratings": {
+      "sustainedDamage": 3,
+      "laning": 3,
+      "frontline": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "60": {
+    "ratings": {
+      "pickoff": 3,
+      "disable": 2,
+      "mapPressure": 2,
+      "frontline": 2,
+      "sustainedDamage": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "61": {
+    "ratings": {
+      "splitPush": 3,
+      "push": 3,
+      "pickoff": 2,
+      "laning": 3,
+      "mapPressure": 2,
+      "sustainedDamage": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "62": {
+    "ratings": {
+      "pickoff": 3,
+      "mapPressure": 3,
+      "burst": 2,
+      "laning": 2,
+      "disable": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "63": {
+    "ratings": {
+      "sustainedDamage": 2,
+      "pickoff": 1,
+      "mapPressure": 1,
+      "splitPush": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "64": {
+    "ratings": {
+      "aoeDamage": 2,
+      "followUp": 3,
+      "waveclear": 3,
+      "push": 2,
+      "disable": 2,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "65": {
+    "ratings": {
+      "initiation": 3,
+      "bkbPiercingDisable": 3,
+      "pickoff": 3,
+      "disable": 2,
+      "mapPressure": 2,
+      "aoeDamage": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "66": {
+    "ratings": {
+      "sustain": 3,
+      "save": 2,
+      "earlyRoshan": 3,
+      "push": 3,
+      "mapPressure": 2,
+      "disable": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "67": {
+    "ratings": {
+      "sustainedDamage": 3,
+      "mapPressure": 3,
+      "frontline": 3,
+      "pickoff": 2
+    },
+    "power": {
+      "early": 1,
+      "mid": 2,
+      "late": 3
+    },
+    "damageType": "pure"
+  },
+  "68": {
+    "ratings": {
+      "healReduction": 3,
+      "aoeDamage": 2,
+      "disable": 1,
+      "mapPressure": 2,
+      "laning": 2,
+      "followUp": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 2,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "69": {
+    "ratings": {
+      "bkbPiercingDisable": 3,
+      "pickoff": 2,
+      "frontline": 2,
+      "earlyRoshan": 1,
+      "sustainedDamage": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "70": {
+    "ratings": {
+      "earlyRoshan": 3,
+      "sustainedDamage": 3,
+      "burst": 2,
+      "pickoff": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "71": {
+    "ratings": {
+      "pickoff": 3,
+      "mapPressure": 3,
+      "bkbPiercingDisable": 2,
+      "initiation": 2,
+      "disable": 2,
+      "frontline": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "72": {
+    "ratings": {
+      "aoeDamage": 3,
+      "sustainedDamage": 2,
+      "waveclear": 2,
+      "laning": 2,
+      "followUp": 1,
+      "disable": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "73": {
+    "ratings": {
+      "sustainedDamage": 2,
+      "frontline": 2,
+      "disable": 1,
+      "earlyRoshan": 2,
+      "push": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "74": {
+    "ratings": {
+      "followUp": 3,
+      "aoeDamage": 3,
+      "disable": 2,
+      "burst": 2,
+      "pickoff": 2,
+      "waveclear": 1,
+      "mapPressure": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "magical"
+  },
+  "75": {
+    "ratings": {
+      "counterInitiation": 3,
+      "disable": 2,
+      "laning": 2,
+      "sustainedDamage": 2,
+      "mapPressure": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 2
+    },
+    "damageType": "pure"
+  },
+  "76": {
+    "ratings": {
+      "burst": 3,
+      "save": 2,
+      "pickoff": 2,
+      "laning": 2,
+      "disable": 1,
+      "aoeDamage": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "pure"
+  },
+  "77": {
+    "ratings": {
+      "splitPush": 3,
+      "push": 3,
+      "earlyRoshan": 3,
+      "mapPressure": 2,
+      "sustainedDamage": 2,
+      "pickoff": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "78": {
+    "ratings": {
+      "initiation": 3,
+      "setup": 2,
+      "disable": 2,
+      "frontline": 2,
+      "dispel": 2,
+      "counterInitiation": 1,
+      "push": 1,
+      "laning": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "79": {
+    "ratings": {
+      "save": 3,
+      "dispel": 2,
+      "counterInitiation": 2,
+      "laning": 2,
+      "pickoff": 1,
+      "disable": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "80": {
+    "ratings": {
+      "push": 3,
+      "splitPush": 2,
+      "earlyRoshan": 3,
+      "sustainedDamage": 2,
+      "laning": 2,
+      "frontline": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "81": {
+    "ratings": {
+      "pickoff": 2,
+      "burst": 3,
+      "disable": 2,
+      "frontline": 2,
+      "push": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "82": {
+    "ratings": {
+      "pickoff": 3,
+      "burst": 3,
+      "mapPressure": 2,
+      "disable": 2,
+      "splitPush": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "83": {
+    "ratings": {
+      "sustain": 3,
+      "save": 2,
+      "setup": 2,
+      "frontline": 2,
+      "disable": 2,
+      "mapPressure": 2,
+      "push": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "84": {
+    "ratings": {
+      "disable": 2,
+      "laning": 3,
+      "frontline": 2,
+      "burst": 2,
+      "sustain": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "85": {
+    "ratings": {
+      "sustain": 2,
+      "frontline": 2,
+      "laning": 3,
+      "push": 1,
+      "sustainedDamage": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "86": {
+    "ratings": {
+      "disable": 2,
+      "counterInitiation": 2,
+      "followUp": 1,
+      "laning": 1,
+      "pickoff": 1,
+      "save": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "87": {
+    "ratings": {
+      "counterInitiation": 3,
+      "setup": 3,
+      "disable": 2,
+      "laning": 2,
+      "aoeDamage": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "88": {
+    "ratings": {
+      "pickoff": 3,
+      "burst": 3,
+      "disable": 2,
+      "mapPressure": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "89": {
+    "ratings": {
+      "splitPush": 3,
+      "push": 3,
+      "counterInitiation": 2,
+      "sustainedDamage": 2,
+      "waveclear": 2,
+      "save": 1,
+      "disable": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "90": {
+    "ratings": {
+      "waveclear": 3,
+      "mapPressure": 2,
+      "sustain": 1,
+      "dispel": 1,
+      "laning": 2,
+      "disable": 1,
+      "aoeDamage": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 2,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "91": {
+    "ratings": {
+      "save": 3,
+      "sustain": 3,
+      "mapPressure": 3,
+      "dispel": 1,
+      "laning": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 2,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "92": {
+    "ratings": {
+      "push": 3,
+      "pickoff": 2,
+      "disable": 2,
+      "sustainedDamage": 1,
+      "save": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "93": {
+    "ratings": {
+      "pickoff": 2,
+      "dispel": 2,
+      "sustainedDamage": 3,
+      "mapPressure": 1,
+      "splitPush": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "94": {
+    "ratings": {
+      "frontline": 3,
+      "sustainedDamage": 3,
+      "aoeDamage": 2,
+      "disable": 1,
+      "waveclear": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 2,
+      "late": 3
+    },
+    "damageType": "magical"
+  },
+  "95": {
+    "ratings": {
+      "sustainedDamage": 3,
+      "earlyRoshan": 3,
+      "push": 2,
+      "disable": 1,
+      "laning": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "96": {
+    "ratings": {
+      "initiation": 3,
+      "frontline": 3,
+      "disable": 2,
+      "aoeDamage": 2,
+      "mapPressure": 2,
+      "save": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "97": {
+    "ratings": {
+      "initiation": 3,
+      "setup": 3,
+      "bkbPiercingDisable": 1,
+      "aoeDamage": 2,
+      "followUp": 1,
+      "disable": 2,
+      "waveclear": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "98": {
+    "ratings": {
+      "frontline": 2,
+      "aoeDamage": 2,
+      "laning": 3,
+      "waveclear": 2,
+      "sustainedDamage": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "pure"
+  },
+  "99": {
+    "ratings": {
+      "frontline": 3,
+      "sustainedDamage": 2,
+      "laning": 3,
+      "aoeDamage": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "100": {
+    "ratings": {
+      "initiation": 2,
+      "pickoff": 2,
+      "save": 2,
+      "disable": 2,
+      "burst": 1,
+      "mapPressure": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "101": {
+    "ratings": {
+      "burst": 3,
+      "pickoff": 2,
+      "disable": 1,
+      "laning": 2,
+      "followUp": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "102": {
+    "ratings": {
+      "save": 3,
+      "dispel": 3,
+      "sustain": 2,
+      "frontline": 2,
+      "counterInitiation": 2,
+      "laning": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 2,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "103": {
+    "ratings": {
+      "setup": 2,
+      "disable": 2,
+      "aoeDamage": 1,
+      "sustainedDamage": 1,
+      "laning": 1,
+      "initiation": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 2,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "104": {
+    "ratings": {
+      "bkbPiercingDisable": 3,
+      "pickoff": 3,
+      "dispel": 2,
+      "sustain": 1,
+      "laning": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "105": {
+    "ratings": {
+      "mapPressure": 2,
+      "aoeDamage": 2,
+      "burst": 2,
+      "disable": 1,
+      "waveclear": 1,
+      "pickoff": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "106": {
+    "ratings": {
+      "aoeDamage": 2,
+      "burst": 2,
+      "pickoff": 2,
+      "mapPressure": 2,
+      "followUp": 2,
+      "splitPush": 1,
+      "laning": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "107": {
+    "ratings": {
+      "save": 3,
+      "counterInitiation": 2,
+      "disable": 2,
+      "pickoff": 2,
+      "mapPressure": 2,
+      "initiation": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "108": {
+    "ratings": {
+      "frontline": 3,
+      "waveclear": 3,
+      "aoeDamage": 2,
+      "mapPressure": 2,
+      "save": 1,
+      "laning": 2,
+      "disable": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "109": {
+    "ratings": {
+      "splitPush": 3,
+      "push": 3,
+      "sustainedDamage": 3,
+      "waveclear": 1
+    },
+    "power": {
+      "early": 1,
+      "mid": 2,
+      "late": 3
+    },
+    "damageType": "physical"
+  },
+  "110": {
+    "ratings": {
+      "followUp": 3,
+      "aoeDamage": 2,
+      "sustain": 2,
+      "initiation": 2,
+      "counterInitiation": 1,
+      "disable": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "111": {
+    "ratings": {
+      "save": 3,
+      "dispel": 3,
+      "counterInitiation": 3,
+      "sustain": 2,
+      "laning": 2,
+      "disable": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "112": {
+    "ratings": {
+      "save": 3,
+      "bkbPiercingDisable": 3,
+      "counterInitiation": 3,
+      "sustain": 1,
+      "disable": 1,
+      "laning": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "113": {
+    "ratings": {
+      "splitPush": 3,
+      "push": 3,
+      "sustainedDamage": 2,
+      "mapPressure": 2,
+      "aoeDamage": 1,
+      "disable": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "magical"
+  },
+  "114": {
+    "ratings": {
+      "setup": 2,
+      "aoeDamage": 2,
+      "sustainedDamage": 2,
+      "mapPressure": 2,
+      "laning": 2,
+      "disable": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "119": {
+    "ratings": {
+      "disable": 3,
+      "pickoff": 2,
+      "burst": 2,
+      "aoeDamage": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "120": {
+    "ratings": {
+      "initiation": 3,
+      "setup": 2,
+      "disable": 2,
+      "aoeDamage": 2,
+      "dispel": 1,
+      "mapPressure": 2,
+      "sustainedDamage": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "121": {
+    "ratings": {
+      "disable": 2,
+      "pickoff": 2,
+      "counterInitiation": 2,
+      "burst": 2,
+      "laning": 2,
+      "save": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "123": {
+    "ratings": {
+      "pickoff": 2,
+      "disable": 2,
+      "burst": 2,
+      "aoeDamage": 1,
+      "mapPressure": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "126": {
+    "ratings": {
+      "pickoff": 2,
+      "burst": 2,
+      "aoeDamage": 2,
+      "disable": 1,
+      "mapPressure": 2,
+      "initiation": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "128": {
+    "ratings": {
+      "aoeDamage": 2,
+      "followUp": 2,
+      "disable": 2,
+      "laning": 2,
+      "save": 1,
+      "burst": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "129": {
+    "ratings": {
+      "initiation": 3,
+      "setup": 3,
+      "frontline": 3,
+      "aoeDamage": 2,
+      "disable": 2,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "131": {
+    "ratings": {
+      "disable": 2,
+      "save": 2,
+      "pickoff": 1,
+      "laning": 2,
+      "setup": 1
+    },
+    "power": {
+      "early": 3,
+      "mid": 2,
+      "late": 1
+    },
+    "damageType": "magical"
+  },
+  "135": {
+    "ratings": {
+      "save": 2,
+      "mapPressure": 3,
+      "sustain": 2,
+      "frontline": 2,
+      "sustainedDamage": 1,
+      "aoeDamage": 1,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "136": {
+    "ratings": {
+      "pickoff": 2,
+      "burst": 2,
+      "save": 2,
+      "disable": 2,
+      "sustainedDamage": 2,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 1
+    },
+    "damageType": "physical"
+  },
+  "137": {
+    "ratings": {
+      "initiation": 3,
+      "bkbPiercingDisable": 2,
+      "frontline": 3,
+      "aoeDamage": 2,
+      "disable": 2,
+      "laning": 2
+    },
+    "power": {
+      "early": 3,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "magical"
+  },
+  "138": {
+    "ratings": {
+      "sustainedDamage": 3,
+      "disable": 2,
+      "laning": 2,
+      "pickoff": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 3
+    },
+    "damageType": "magical"
+  },
+  "145": {
+    "ratings": {
+      "burst": 3,
+      "pickoff": 2,
+      "disable": 2,
+      "sustainedDamage": 2,
+      "mapPressure": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 3,
+      "late": 2
+    },
+    "damageType": "physical"
+  },
+  "155": {
+    "ratings": {
+      "sustain": 2,
+      "save": 1,
+      "disable": 2,
+      "frontline": 2,
+      "laning": 2,
+      "initiation": 1
+    },
+    "power": {
+      "early": 2,
+      "mid": 2,
+      "late": 2
+    },
+    "damageType": "magical"
+  }
+}

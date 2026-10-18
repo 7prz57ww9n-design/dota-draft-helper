@@ -100,7 +100,8 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
         heading: 'How to rate',
         items: [
           'Choose a hero on the left (or use Prev / Next), then click 0–3 on each row: 0 = not at all, 1 = a little, 2 = good at it, 3 = a core reason to pick this hero.',
-          'Each row explains what the tag means. The hero list shows how many tags each hero has rated so far.',
+          'Every hero starts with default ratings pre-filled from its kit (e.g. Ancient Apparition: Heal reduction 3), marked "default". Clicking a value makes it "edited"; "Reset to defaults" discards our edits for that hero.',
+          'Each row explains what the tag means. The hero list shows how many tags each hero has and whether we edited it.',
           'Ratings belong to the hero, not the player: Tidehunter\'s initiation is the same whoever plays him. Player comfort is set on the Team page.',
           'Rate together as a team so a "3" means the same thing for everyone.',
         ],
@@ -110,7 +111,7 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
         items: [
           'Team tags (Initiation, Waveclear, Push, …): the draft has a target for each tag, depending on the win condition. A hero scores for the part of the gap it fills; once a tag reaches its target, more of it adds nothing.',
           'Setup and Follow-up: big AoE lockdown (Black Hole, Ravage) and the AoE damage that needs it. Having both in the draft gives a +2 combo bonus.',
-          'Answer tags (Armor reduction, AoE / cleave, Detection, …): only count when the enemy picks a hero with the matching threat (see the Threats page).',
+          'Heal reduction: counts once the enemy picks a heal-reliant hero. Other enemy threats are answered by the team tags above (see the Threats page for which tag answers which threat).',
           'Power early / mid / late: when the hero is strongest. The win condition weights these.',
           'Damage type: once we have two or more picks that all deal the same type, another hero of that type gets −2.',
         ],
@@ -130,7 +131,7 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
       {
         heading: 'How threats affect picks',
         items: [
-          'Each enemy hero with a threat raises our target for the matching answer tag by 2 (up to +4), and that tag counts 1.5× when scoring picks. So after the enemy picks an illusion hero, our heroes rated high on AoE / cleave move up.',
+          'Each enemy hero with a threat raises our target for the matching answer tag by 2 (up to +4), and that tag counts 1.5× when scoring picks. So after the enemy picks an illusion hero, our heroes rated high on AoE damage move up.',
           ...threatAnswers,
         ],
       },

@@ -20,7 +20,7 @@ describe('computeCoverage', () => {
   it('treats heroes without a profile as zeros', () => {
     const c = computeCoverage([99], {});
     expect(Object.values(c).every((v) => v === 0)).toBe(true);
-    expect(Object.keys(c)).toHaveLength(27);
+    expect(Object.keys(c)).toHaveLength(21);
   });
 });
 
@@ -29,7 +29,7 @@ describe('enemyThreatCounts', () => {
     const c = enemyThreatCounts([1, 2, 3], { 1: ['illusions', 'tanky'], 2: ['illusions'] });
     expect(c.illusions).toBe(2);
     expect(c.tanky).toBe(1);
-    expect(c.evasion).toBe(0);
+    expect(c.mobility).toBe(0);
     expect(Object.keys(c)).toHaveLength(THREATS.length);
   });
 });
@@ -37,9 +37,9 @@ describe('enemyThreatCounts', () => {
 describe('effectiveTargets', () => {
   it('caps boost at 4 and sets weight 1.5', () => {
     const r = effectiveTargets('balanced', counts({ illusions: 3 }));
-    expect(r.targets.aoeCleave).toBe(4);
-    expect(r.weights.aoeCleave).toBe(1.5);
-    expect(r.threatBoosted.aoeCleave).toBe('illusions');
+    expect(r.targets.aoeDamage).toBe(8); // balanced base 4 + capped boost 4
+    expect(r.weights.aoeDamage).toBe(1.5);
+    expect(r.threatBoosted.aoeDamage).toBe('illusions');
   });
   it('gives must-have weight 2, others 1', () => {
     const r = effectiveTargets('balanced', counts({}));
@@ -49,10 +49,10 @@ describe('effectiveTargets', () => {
     expect(r.targets.earlyRoshan).toBe(0);
   });
   it('boosts weight for single threats', () => {
-    expect(effectiveTargets('fightEarly', counts({ illusions: 1 })).weights.aoeCleave).toBe(1.5);
+    expect(effectiveTargets('fightEarly', counts({ illusions: 1 })).weights.aoeDamage).toBe(2); // must-have in fightEarly wins over 1.5
     const b = effectiveTargets('balanced', counts({ tanky: 1 }));
-    expect(b.weights.armorReduction).toBe(1.5);
-    expect(b.targets.armorReduction).toBe(2);
+    expect(b.weights.sustainedDamage).toBe(1.5);
+    expect(b.targets.sustainedDamage).toBe(5); // balanced base 3 + 2
   });
   it('must-have and boosted gives weight 2', () => {
     const profiles = {

@@ -29,7 +29,7 @@ describe('threats.seed.json', () => {
     expect(threatsOf('npc_dota_hero_phantom_lancer')).toContain('illusions');
   });
 
-  test('Riki includes invisibility', () => {
-    expect(threatsOf('npc_dota_hero_riki')).toContain('invisibility');
+  test('Lifestealer includes spell immunity', () => {
+    expect(threatsOf('npc_dota_hero_life_stealer')).toContain('spellImmune');
   });
 });

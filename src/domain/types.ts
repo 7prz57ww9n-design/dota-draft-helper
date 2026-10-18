@@ -7,13 +7,10 @@ export type TeamTag =
   | 'aoeDamage' | 'burst' | 'sustainedDamage' | 'frontline' | 'save' | 'sustain'
   | 'dispel' | 'waveclear' | 'push' | 'splitPush' | 'mapPressure' | 'earlyRoshan'
   | 'laning' | 'setup' | 'followUp';
-export type AnswerTag =
-  | 'armorReduction' | 'aoeCleave' | 'detection' | 'trueStrike'
-  | 'instantDisable' | 'magicResist' | 'healReduction';
+export type AnswerTag = 'healReduction';
 export type RatingKey = TeamTag | AnswerTag;
 export type Threat =
-  | 'tanky' | 'illusions' | 'invisibility' | 'evasion'
-  | 'mobility' | 'magicBurst' | 'healReliant' | 'spellImmune';
+  | 'tanky' | 'illusions' | 'mobility' | 'magicBurst' | 'healReliant' | 'spellImmune';
 export type Phase = 'early' | 'mid' | 'late';
 export type DamageType = 'physical' | 'magical' | 'pure';
 export type WinCondition = 'balanced' | 'fightEarly' | 'pickoff' | 'lateScaling' | 'splitPush';

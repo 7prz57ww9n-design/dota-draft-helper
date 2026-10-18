@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { heroById, type HeroId } from '../data/heroes';
+import { defaultProfile, withDefaults } from '../data/ratingDefaults';
 import { ANSWER_TAGS, TAG_DEFINITIONS, TAG_LABELS } from '../domain/tags';
 import type { DamageType, HeroProfile, Phase, Rating, RatingKey } from '../domain/types';
 import { useStore } from '../store/store';
@@ -9,7 +10,7 @@ const GROUPS: { title: string; note?: string; keys: RatingKey[] }[] = [
   { title: 'Keeping heroes alive', keys: ['save', 'sustain', 'dispel'] },
   { title: 'Map and objectives', keys: ['waveclear', 'push', 'splitPush', 'mapPressure', 'earlyRoshan', 'laning'] },
   { title: 'Setup & follow-up', note: 'Having both in a draft gives a combo bonus.', keys: ['setup', 'followUp'] },
-  { title: 'Answers to enemy threats', note: 'Only count once the enemy picks a hero with the matching threat.', keys: ANSWER_TAGS },
+  { title: 'Counters', note: 'Counts once the enemy picks a heal-reliant hero.', keys: ANSWER_TAGS },
 ];
 const ALL_KEYS = GROUPS.flatMap((g) => g.keys);
 const PHASES: { phase: Phase; label: string; definition: string }[] = [
@@ -24,13 +25,16 @@ const SCALE: { value: Rating; word: string }[] = [
 
 const ratedCount = (p: HeroProfile | undefined) => ALL_KEYS.filter((k) => (p?.ratings[k] ?? 0) > 0).length;
 
-function RatingRow({ label, definition, value, onChange }: {
-  label: string; definition: string; value: Rating; onChange: (r: Rating) => void;
+function RatingRow({ label, definition, value, isDefault, onChange }: {
+  label: string; definition: string; value: Rating; isDefault: boolean; onChange: (r: Rating) => void;
 }) {
   return (
     <div className="rating-row">
       <div className="rating-text">
-        <div className="rating-label">{label}</div>
+        <div className="rating-label">
+          {label}
+          {isDefault ? <span className="origin default">default</span> : <span className="origin edited">edited</span>}
+        </div>
         <div className="rating-def">{definition}</div>
       </div>
       <div role="radiogroup" aria-label={label} className="rating-scale">
@@ -59,6 +63,8 @@ export default function RatingsScreen() {
   const setRating = useStore((s) => s.setRating);
   const setPower = useStore((s) => s.setPower);
   const setDamageType = useStore((s) => s.setDamageType);
+  const resetProfile = useStore((s) => s.resetProfile);
+  const effective = withDefaults(profiles);
   const [selectedId, setSelectedId] = useState<HeroId | null>(null);
 
   const positionsOf = new Map<HeroId, number[]>();
@@ -81,7 +87,8 @@ export default function RatingsScreen() {
 
   const index = Math.max(0, heroes.findIndex((h) => h.id === selectedId));
   const hero = heroes[index];
-  const prof = profiles[hero.id];
+  const stored = profiles[hero.id];
+  const prof = effective[hero.id] ?? defaultProfile(hero.id);
 
   return (
     <div className="screen">
@@ -93,7 +100,7 @@ export default function RatingsScreen() {
               <button type="button" className={i === index ? 'active' : ''} aria-current={i === index} onClick={() => setSelectedId(h.id)}>
                 <img src={h.img} alt="" />
                 <span className="rh-name">{h.localizedName}</span>
-                <span className="rh-meta">Pos {[...positionsOf.get(h.id)!].sort().join('/')} · {ratedCount(profiles[h.id])}/{ALL_KEYS.length} rated</span>
+                <span className="rh-meta">Pos {[...positionsOf.get(h.id)!].sort().join('/')} · {ratedCount(effective[h.id])}/{ALL_KEYS.length} tags{profiles[h.id] ? ' · edited' : ''}</span>
               </button>
             </li>
           ))}
@@ -107,18 +114,19 @@ export default function RatingsScreen() {
               Damage type
               <select
                 aria-label="Damage type"
-                value={prof?.damageType ?? 'physical'}
+                value={prof.damageType}
                 onChange={(e) => setDamageType(hero.id, e.target.value as DamageType)}
               >
                 {DAMAGE.map((d) => <option key={d} value={d}>{d}</option>)}
               </select>
             </label>
+            <button type="button" disabled={!stored} title="Discard our edits for this hero and go back to the default ratings" onClick={() => resetProfile(hero.id)}>Reset to defaults</button>
             <div className="editor-nav">
               <button type="button" aria-label="Previous hero" disabled={index === 0} onClick={() => setSelectedId(heroes[index - 1].id)}>← Prev</button>
               <button type="button" aria-label="Next hero" disabled={index === heroes.length - 1} onClick={() => setSelectedId(heroes[index + 1].id)}>Next →</button>
             </div>
           </div>
-          <p className="hint">0 = not at all · 1 = a little · 2 = good at it · 3 = a core reason to pick this hero.</p>
+          <p className="hint">0 = not at all · 1 = a little · 2 = good at it · 3 = a core reason to pick this hero. Values marked <em>default</em> are pre-filled from the hero's kit; any click makes it <em>edited</em>.</p>
 
           {GROUPS.map((g) => (
             <section key={g.title} className="card rating-group" aria-label={g.title}>
@@ -129,7 +137,8 @@ export default function RatingsScreen() {
                   key={k}
                   label={TAG_LABELS[k]}
                   definition={TAG_DEFINITIONS[k]}
-                  value={(prof?.ratings[k] ?? 0) as Rating}
+                  value={(prof.ratings[k] ?? 0) as Rating}
+                  isDefault={stored?.ratings[k] === undefined}
                   onChange={(r) => setRating(hero.id, k, r)}
                 />
               ))}
@@ -144,7 +153,8 @@ export default function RatingsScreen() {
                 key={ph.phase}
                 label={ph.label}
                 definition={ph.definition}
-                value={(prof?.power[ph.phase] ?? 0) as Rating}
+                value={prof.power[ph.phase]}
+                isDefault={!stored || stored.power[ph.phase] === defaultProfile(hero.id).power[ph.phase]}
                 onChange={(r) => setPower(hero.id, ph.phase, r)}
               />
             ))}

@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { HEROES } from '../data/heroes';
-import { TAG_DEFINITIONS } from '../domain/tags';
+import { defaultProfile } from '../data/ratingDefaults';
+import { TAG_DEFINITIONS, TAG_LABELS } from '../domain/tags';
 import { initialState, useStore } from '../store/store';
 import RatingsScreen from './RatingsScreen';
 
@@ -53,11 +54,29 @@ describe('RatingsScreen', () => {
     expect(useStore.getState().profiles[axe.id].damageType).toBe('magical');
   });
 
-  test('hero list shows how many tags are rated, and Next moves to the next hero', () => {
+  test('hero list shows tag count and edited state, and Next moves to the next hero', () => {
     render(<RatingsScreen />);
-    fireEvent.click(within(tagRow('Initiation')).getByRole('radio', { name: /^3/ }));
-    expect(screen.getByRole('button', { name: /Axe/ })).toHaveTextContent('1/27 rated');
+    const before = Object.keys(defaultProfile(axe.id).ratings).length;
+    expect(screen.getByRole('button', { name: /Axe/ })).toHaveTextContent(`${before}/21 tags`);
+    expect(screen.getByRole('button', { name: /Axe/ })).not.toHaveTextContent('edited');
+    fireEvent.click(within(tagRow('Waveclear')).getByRole('radio', { name: /^3/ }));
+    expect(screen.getByRole('button', { name: /Axe/ })).toHaveTextContent('edited');
     fireEvent.click(screen.getByRole('button', { name: /next hero/i }));
     expect(screen.getByRole('heading', { level: 3, name: 'Pudge' })).toBeInTheDocument();
+  });
+
+  test('rows start from the hero defaults, marked default until edited, and reset restores them', () => {
+    render(<RatingsScreen />);
+    const [key, value] = Object.entries(defaultProfile(axe.id).ratings)[0];
+    const label = TAG_LABELS[key as keyof typeof TAG_LABELS];
+    const row = () => tagRow(label);
+    expect(within(row()).getByRole('radio', { name: new RegExp('^' + value) })).toHaveAttribute('aria-checked', 'true');
+    expect(row().closest('.rating-row')).toHaveTextContent('default');
+    fireEvent.click(within(row()).getByRole('radio', { name: /^0/ }));
+    expect(useStore.getState().profiles[axe.id].ratings[key as keyof typeof TAG_LABELS]).toBe(0);
+    expect(row().closest('.rating-row')).toHaveTextContent('edited');
+    fireEvent.click(screen.getByRole('button', { name: 'Reset to defaults' }));
+    expect(useStore.getState().profiles[axe.id]).toBeUndefined();
+    expect(within(row()).getByRole('radio', { name: new RegExp('^' + value) })).toHaveAttribute('aria-checked', 'true');
   });
 });

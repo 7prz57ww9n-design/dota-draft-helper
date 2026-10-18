@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { HEROES, heroById } from '../data/heroes';
 import type { HeroId } from '../data/heroes';
+import { withDefaults } from '../data/ratingDefaults';
 import { computeCoverage, effectiveTargets, enemyThreatCounts } from '../domain/coverage';
 import { nextExpected, positionOptions, toContext } from '../domain/draft';
 import type { ActionKind, DraftMode, Side } from '../domain/draft';
@@ -53,7 +54,8 @@ function HeroChip({ heroId, onRemove }: { heroId: HeroId; onRemove?: () => void 
 }
 
 export default function DraftScreen() {
-  const { players, profiles, threats, synergies, watchlist, draft } = useStore();
+  const { players, profiles: storedProfiles, threats, synergies, watchlist, draft } = useStore();
+  const profiles = useMemo(() => withDefaults(storedProfiles), [storedProfiles]);
   const { draftApply, draftUndo, draftReset, setWeFirst, setAvailable, setWin } = useStore.getState();
 
   const [override, setOverride] = useState<Current | null>(null);

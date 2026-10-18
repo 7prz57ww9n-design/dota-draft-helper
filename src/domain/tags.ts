@@ -8,13 +8,11 @@ export const TEAM_TAGS: TeamTag[] = [
 ];
 
 export const ANSWER_TAGS: AnswerTag[] = [
-  'armorReduction', 'aoeCleave', 'detection', 'trueStrike',
-  'instantDisable', 'magicResist', 'healReduction',
+  'healReduction',
 ];
 
 export const THREATS: Threat[] = [
-  'tanky', 'illusions', 'invisibility', 'evasion',
-  'mobility', 'magicBurst', 'healReliant', 'spellImmune',
+  'tanky', 'illusions', 'mobility', 'magicBurst', 'healReliant', 'spellImmune',
 ];
 
 export const TAG_LABELS: Record<RatingKey, string> = {
@@ -38,20 +36,12 @@ export const TAG_LABELS: Record<RatingKey, string> = {
   laning: 'Laning',
   setup: 'Setup',
   followUp: 'Follow-up',
-  armorReduction: 'Armor reduction',
-  aoeCleave: 'AoE / cleave',
-  detection: 'Detection',
-  trueStrike: 'True strike',
-  instantDisable: 'Instant disable',
-  magicResist: 'Magic resistance',
   healReduction: 'Heal reduction',
 };
 
 export const THREAT_LABELS: Record<Threat, string> = {
   tanky: 'Tanky',
   illusions: 'Illusions',
-  invisibility: 'Invisibility',
-  evasion: 'Evasion',
   mobility: 'Mobility',
   magicBurst: 'Magic burst',
   healReliant: 'Heal-reliant',
@@ -59,12 +49,10 @@ export const THREAT_LABELS: Record<Threat, string> = {
 };
 
 export const THREAT_ANSWER: Record<Threat, RatingKey> = {
-  tanky: 'armorReduction',
-  illusions: 'aoeCleave',
-  invisibility: 'detection',
-  evasion: 'trueStrike',
-  mobility: 'instantDisable',
-  magicBurst: 'magicResist',
+  tanky: 'sustainedDamage',
+  illusions: 'aoeDamage',
+  mobility: 'disable',
+  magicBurst: 'save',
   healReliant: 'healReduction',
   spellImmune: 'bkbPiercingDisable',
 };
@@ -98,20 +86,12 @@ export const TAG_DEFINITIONS: Record<RatingKey, string> = {
   laning: 'Strong in the laning stage',
   setup: 'Big AoE lockdown that sets up a teamfight (e.g. Black Hole, Ravage)',
   followUp: 'AoE damage that needs enemies held in place',
-  armorReduction: 'Lowers enemy armor to beat tanky heroes',
-  aoeCleave: 'Kills illusions/summons: cleave, AoE',
-  detection: 'Reveals invisible enemies',
-  trueStrike: 'Attacks or spells that ignore evasion',
-  instantDisable: 'Instant-cast disable to catch mobile heroes',
-  magicResist: 'Reduces magic damage taken',
   healReduction: 'Cuts enemy healing and regeneration',
 };
 
 export const THREAT_DEFINITIONS: Record<Threat, string> = {
   tanky: 'Has high effective HP and is hard to kill',
   illusions: 'Creates illusions that deal or soak damage',
-  invisibility: 'Can become invisible',
-  evasion: 'Avoids physical attacks',
   mobility: 'Can escape or close distance instantly',
   magicBurst: 'Deals heavy magical damage quickly',
   healReliant: 'Depends on healing or regeneration to survive',

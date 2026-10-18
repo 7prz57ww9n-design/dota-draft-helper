@@ -9,7 +9,7 @@ describe('suggestBans', () => {
   it('flags a threat we have no answer to', () => {
     const ctx = makeContext({
       players: [player(1, [JUGGERNAUT])],
-      profiles: profilesOf(profile(JUGGERNAUT, { aoeCleave: 1 })),
+      profiles: profilesOf(profile(JUGGERNAUT, { aoeDamage: 1 })),
       threats: { [NAGA_SIREN]: ['illusions'] },
     });
     const naga = find(suggestBans(ctx, {}, 200), NAGA_SIREN);
@@ -20,7 +20,7 @@ describe('suggestBans', () => {
   it('gives no threat score when our pool has a strong answer', () => {
     const ctx = makeContext({
       players: [player(1, [SVEN])],
-      profiles: profilesOf(profile(SVEN, { aoeCleave: 3 })),
+      profiles: profilesOf(profile(SVEN, { aoeDamage: 3 })),
       threats: { [NAGA_SIREN]: ['illusions'] },
     });
     expect(find(suggestBans(ctx, {}, 200), NAGA_SIREN)).toBeUndefined();
@@ -29,7 +29,7 @@ describe('suggestBans', () => {
   it('ignores answers that are picked by the enemy, banned, or unavailable', () => {
     const ctx = makeContext({
       players: [player(1, [SVEN, AXE])],
-      profiles: profilesOf(profile(SVEN, { aoeCleave: 3 }), profile(AXE, { aoeCleave: 3 })),
+      profiles: profilesOf(profile(SVEN, { aoeDamage: 3 }), profile(AXE, { aoeDamage: 3 })),
       threats: { [NAGA_SIREN]: ['illusions'] },
       enemyPicks: [SVEN],
       available: [SVEN, AXE, NAGA_SIREN],
@@ -40,7 +40,7 @@ describe('suggestBans', () => {
 
   it('uses answers from our picks too', () => {
     const ctx = makeContext({
-      profiles: profilesOf(profile(SVEN, { aoeCleave: 2 })),
+      profiles: profilesOf(profile(SVEN, { aoeDamage: 2 })),
       threats: { [NAGA_SIREN]: ['illusions'] },
       ourPicks: [{ heroId: SVEN, position: 1 }],
     });

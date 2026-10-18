@@ -20,7 +20,7 @@ describe('page help', () => {
     fireEvent.click(screen.getByRole('button', { name: /how this page works/i }));
     const dialog = screen.getByRole('dialog', { name: /threats/i });
     expect(dialog).toHaveTextContent('Watch column');
-    expect(dialog).toHaveTextContent('Illusions → answered by AoE / cleave');
+    expect(dialog).toHaveTextContent('Illusions → answered by AoE damage');
     fireEvent.keyDown(dialog, { key: 'Escape' });
     expect(screen.queryByRole('dialog')).toBeNull();
   });

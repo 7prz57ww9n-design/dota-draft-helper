@@ -1,3 +1,4 @@
+import { defaultProfile } from '../data/ratingDefaults';
 import { ImportError, exportData, parseImport } from './exportImport';
 import { initialState, useStore } from './store';
 
@@ -27,7 +28,7 @@ describe('store', () => {
     const st = useStore.getState();
     expect(st.players[0].pool).toEqual([{ heroId: 1, comfort: 3 }]);
     expect(st.profiles[1]).toEqual({
-      heroId: 1, ratings: { disable: 2 }, power: { early: 0, mid: 0, late: 3 }, damageType: 'magical',
+      heroId: 1, ratings: { disable: 2 }, power: { ...defaultProfile(1).power, late: 3 }, damageType: 'magical',
     });
     expect(st.threats[2]).toEqual(['tanky']);
     st.toggleThreat(2, 'tanky');
