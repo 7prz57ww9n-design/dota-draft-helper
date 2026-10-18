@@ -31,7 +31,7 @@ export default function ThreatsScreen() {
             <tr>
               <th className="hero-col">Hero</th>
               {THREATS.map((t) => <th key={t} title={THREAT_DEFINITIONS[t]}>{THREAT_LABELS[t]}</th>)}
-              <th>Watch</th>
+              <th title="Heroes we hate facing: the value (1–3) is added to that hero's ban score">Watch</th>
             </tr>
           </thead>
           <tbody>

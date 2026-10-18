@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useStore } from './store/store';
 import DataScreen from './ui/DataScreen';
 import DraftScreen from './ui/DraftScreen';
+import HelpPanel from './ui/HelpPanel';
 import RatingsScreen from './ui/RatingsScreen';
 import SynergyScreen from './ui/SynergyScreen';
 import TeamScreen from './ui/TeamScreen';
@@ -31,6 +32,7 @@ export default function App() {
         </nav>
       </header>
       <main>
+        <HelpPanel tab={tab} />
         {tab === 'Draft' && <DraftScreen />}
         {tab === 'Team' && <TeamScreen />}
         {tab === 'Ratings' && <RatingsScreen />}
