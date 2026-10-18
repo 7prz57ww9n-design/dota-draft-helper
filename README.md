@@ -48,3 +48,17 @@ Each browser keeps its own data. To share it, open the **Data** tab and choose *
 - **Threat flags** (`src/data/threats.seed.json`) are best-effort values from current hero kits. Correct them in the Threats screen for your team.
 - **Win-condition targets** (`src/domain/winConditions.ts`) are starting values. Adjust the targets and must-haves to match how your team plays.
 - **Captains Mode order** (`src/domain/draftOrder.ts`) follows the order introduced in patch 7.34. Check it against the current patch before relying on it.
+
+## Team sync (Firebase)
+
+Team data can be shared online through Firestore in the Firebase project `dota-drafter-55d00` (free Spark plan).
+On the Data tab, one player clicks **Create team from my data** and sends the team link to the others.
+
+- Web config: `src/sync/firebaseConfig.ts` (public by design; access is controlled by the rules).
+- Security rules: `firestore.rules`. Anyone who knows a team's 24-character code can read and write that team;
+  teams cannot be listed. After changing the rules, deploy them with:
+
+  ```bash
+  npx firebase-tools login
+  npx firebase-tools deploy --only firestore:rules
+  ```

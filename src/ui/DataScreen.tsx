@@ -1,10 +1,13 @@
 import { useRef, useState } from 'react';
 import { exportData, ImportError, parseImport } from '../store/exportImport';
 import { useStore } from '../store/store';
+import { useTeamStore } from '../sync/teamConnection';
+import TeamSyncCard from './TeamSyncCard';
 
 export default function DataScreen() {
   const importData = useStore((s) => s.importData);
   const resetAll = useStore((s) => s.resetAll);
+  const inTeam = useTeamStore((s) => s.teamId !== null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
@@ -25,6 +28,10 @@ export default function DataScreen() {
     setError(null);
     setOk(null);
     if (!file) return;
+    if (inTeam && !window.confirm('This replaces the shared team data for everyone with the contents of the file. Continue?')) {
+      if (fileRef.current) fileRef.current.value = '';
+      return;
+    }
     try {
       importData(parseImport(await file.text()));
       setOk(`Imported ${file.name} successfully.`);
@@ -44,6 +51,7 @@ export default function DataScreen() {
   return (
     <div className="screen">
       <h2>Data</h2>
+      <TeamSyncCard />
       <div className="card data-actions">
         <button onClick={doExport}>Export JSON</button>
         <label className="file-label">
@@ -56,7 +64,14 @@ export default function DataScreen() {
             onChange={(e) => void doImport(e.target.files?.[0])}
           />
         </label>
-        <button className="danger" onClick={doReset}>Reset all data</button>
+        <button
+          className="danger"
+          onClick={doReset}
+          disabled={inTeam}
+          title={inTeam ? 'Leave the team first: resetting would wipe the team for everyone' : undefined}
+        >
+          Reset all data
+        </button>
       </div>
       {error && <div role="alert" className="alert error">{error}</div>}
       {ok && <div role="status" className="alert ok">{ok}</div>}

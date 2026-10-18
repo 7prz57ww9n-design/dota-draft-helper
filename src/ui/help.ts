@@ -171,13 +171,25 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
     ],
   },
   Data: {
-    summary: 'Back up, share and reset the team data.',
+    summary: 'Share the team data online, back it up, or reset it.',
     sections: [
+      {
+        heading: 'Team sync (shared online)',
+        items: [
+          'One person clicks "Create team from my data". The data in that browser becomes the team\'s, and a team link appears.',
+          'Send the link to the other four. Opening it (or pasting it under "Join team") loads the team into their browser.',
+          'From then on, every change to players, pools, comfort, ratings, threats, synergies and the watchlist is saved online within a second and shows up live for everyone. The header shows "Team synced".',
+          'Each position is saved separately, so two players editing their own heroes at the same time never overwrite each other. If two people edit the same position or the shared threats/synergies at once, the last save wins.',
+          'The draft in progress is not shared: whoever drives the draft does it in their own browser.',
+          'Anyone with the link can view and edit, so keep it within the team. "Leave team" stops syncing; this browser keeps its copy.',
+        ],
+      },
       {
         heading: 'Where the data lives',
         items: [
-          'Everything is saved only in this browser on this device. Another browser, device, private window or web address starts empty.',
-          'Clearing this site\'s data in the browser deletes it, so export a backup after changes.',
+          'Without a team, everything is saved only in this browser on this device. Another browser, device, private window or web address starts empty.',
+          'With a team, the data is stored online and every browser keeps a local copy, so the app still works offline. Edits made while offline are lost on reload; reconnect before editing.',
+          'Clearing this site\'s data in the browser forgets the team link too; open the link again to reconnect.',
         ],
       },
       {
@@ -185,7 +197,7 @@ export const PAGE_HELP: Record<HelpTab, PageHelp> = {
         items: [
           'Export downloads one file with players, pools, ratings, threats, synergies and the watchlist (not the draft in progress).',
           'Import loads such a file and replaces the current data. Files exported before ratings became per-position still import: each hero\'s ratings are copied to every position whose pool has it. An invalid file shows an error and changes nothing.',
-          'Reset clears players, pools, ratings, synergies and the watchlist, and restores the default threat flags.',
+          'Reset clears players, pools, ratings, synergies and the watchlist, and restores the default threat flags. It is disabled while in a team, so nobody wipes the team by accident. Importing a file while in a team replaces the team\'s data for everyone (you are asked first).',
         ],
       },
     ],

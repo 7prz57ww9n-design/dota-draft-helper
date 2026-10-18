@@ -162,3 +162,14 @@ button.rate { width: 30px; height: 26px; padding: 0; }
 .editor-title h3 { flex: none; }
 .editor-pos { color: var(--muted); font-size: 12px; }
 .alternatives { font-size: 11px; padding: 0 8px 2px 54px; }
+.team-sync h3 { margin: 0 0 6px; }
+.team-sync-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.team-sync-row input { flex: 1; min-width: 220px; }
+.sync-status { margin: 0 0 6px; font-weight: 600; }
+.sync-status.sync-synced { color: var(--ok); }
+.sync-status.sync-error { color: var(--danger); }
+.team-badge { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+.team-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.team-badge.sync-synced .team-dot { background: var(--ok); }
+.team-badge.sync-error .team-dot { background: var(--danger); }
+.team-badge.sync-saving .team-dot, .team-badge.sync-connecting .team-dot { background: var(--accent); }

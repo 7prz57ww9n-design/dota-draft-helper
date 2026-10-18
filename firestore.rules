@@ -1,0 +1,27 @@
+rules_version = '2';
+
+// Team data is shared by link: knowing a team's random code is what grants
+// access. Teams can't be listed or browsed, only opened by exact code.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isTeamCode(teamId) {
+      return teamId.matches('^[A-Za-z0-9]{24}$');
+    }
+
+    // One document per position: player name, pool and that position's ratings.
+    match /teams/{teamId}/positions/{pos} {
+      allow get, list: if isTeamCode(teamId);
+      allow create, update: if isTeamCode(teamId)
+        && pos in ['1', '2', '3', '4', '5']
+        && request.resource.data.keys().hasOnly(['player', 'profiles', 'updatedAt']);
+    }
+
+    // Threats, synergies and the ban watchlist, shared by the whole team.
+    match /teams/{teamId}/shared/{doc} {
+      allow get: if isTeamCode(teamId) && doc == 'main';
+      allow create, update: if isTeamCode(teamId)
+        && doc == 'main'
+        && request.resource.data.keys().hasOnly(['threats', 'synergies', 'watchlist', 'updatedAt']);
+    }
+  }
+}
