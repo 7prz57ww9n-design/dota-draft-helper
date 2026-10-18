@@ -15,12 +15,14 @@ export function suggestBans(
 
   // Heroes that could still answer a threat: our picks plus pickable open-pool heroes.
   const answerers = new Set<HeroId>(ctx.ourPicks.map((p) => p.heroId));
+  const ownPickable = new Set<HeroId>(); // we never suggest banning our own prospective picks
   for (const player of ctx.players) {
     if (filled.has(player.position)) continue;
     for (const entry of player.pool) {
       if (taken.has(entry.heroId)) continue;
       if (available && !available.has(entry.heroId)) continue;
       answerers.add(entry.heroId);
+      ownPickable.add(entry.heroId);
     }
   }
   const coverageOf = (threat: keyof typeof THREAT_ANSWER) => {
@@ -32,7 +34,7 @@ export function suggestBans(
 
   const out: { heroId: HeroId; score: number; reasons: Reason[] }[] = [];
   for (const hero of HEROES) {
-    if (taken.has(hero.id)) continue;
+    if (taken.has(hero.id) || ownPickable.has(hero.id)) continue;
     if (available && !available.has(hero.id)) continue;
     const reasons: Reason[] = [];
     for (const threat of ctx.threats[hero.id] ?? []) {

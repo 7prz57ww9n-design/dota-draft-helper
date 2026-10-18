@@ -62,4 +62,21 @@ describe('suggestBans', () => {
     const list = suggestBans(makeContext(), { [MAGNUS]: 2, [AXE]: 2, [SVEN]: 3 }, 2);
     expect(list.map((s) => s.heroId)).toEqual([SVEN, AXE]);
   });
+
+  it('does not suggest banning heroes in our open-position pools that are still pickable', () => {
+    const watch: Record<number, 1 | 2 | 3> = { [AXE]: 3, [SVEN]: 3, [MAGNUS]: 3 };
+    const ctx = makeContext({
+      players: [player(1, [SVEN]), player(3, [AXE]), player(4, [MAGNUS])],
+      ourPicks: [{ heroId: AXE, position: 3 }],
+    });
+    expect(suggestBans(ctx, watch, 200)).toEqual([]);
+    const ctx2 = makeContext({ players: [player(1, [SVEN])] });
+    expect(suggestBans(ctx2, { [SVEN]: 3, [MAGNUS]: 2 }, 200).map((s) => s.heroId)).toEqual([MAGNUS]);
+    // A pool hero whose position is already filled is no longer ours to pick, so it may be banned.
+    const ctx3 = makeContext({ players: [player(3, [MAGNUS])], ourPicks: [{ heroId: AXE, position: 3 }] });
+    expect(suggestBans(ctx3, { [MAGNUS]: 2 }, 200).map((s) => s.heroId)).toEqual([MAGNUS]);
+    // A pool hero outside the available list is not pickable either.
+    const ctx4 = makeContext({ players: [player(1, [SVEN])], available: [MAGNUS, JUGGERNAUT] });
+    expect(suggestBans(ctx4, { [MAGNUS]: 2 }, 200).map((s) => s.heroId)).toEqual([MAGNUS]);
+  });
 });

@@ -97,17 +97,13 @@ export function suggestPicks(
 
     add('Comfort', (c.comfort - 2) * 2);
 
-    const partners: HeroId[] = [];
-    let synergy = 0;
     let duos = 0;
     for (const pair of ctx.synergies) {
       const other = pair.a === heroId ? pair.b : pair.b === heroId ? pair.a : null;
       if (other === null || !ourSet.has(other)) continue;
-      synergy += pair.strength;
-      partners.push(other);
+      add(`Synergy with ${name(other)}`, pair.strength);
       if (pair.laneDuo) duos += 1;
     }
-    add(`Synergy with ${partners.map(name).join(', ')}`, synergy);
     add('Lane duo', duos);
 
     if (

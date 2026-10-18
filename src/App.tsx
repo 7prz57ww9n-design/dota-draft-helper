@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useStore } from './store/store';
 import DataScreen from './ui/DataScreen';
 import DraftScreen from './ui/DraftScreen';
 import RatingsScreen from './ui/RatingsScreen';
@@ -10,7 +11,7 @@ const TABS = ['Draft', 'Team', 'Ratings', 'Threats', 'Synergy', 'Data'] as const
 type Tab = (typeof TABS)[number];
 
 export default function App() {
-  const [tab, setTab] = useState<Tab>('Team');
+  const [tab, setTab] = useState<Tab>(() => (useStore.getState().draft.actions.length > 0 ? 'Draft' : 'Team'));
   return (
     <div className="app">
       <header>

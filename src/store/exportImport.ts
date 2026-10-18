@@ -52,6 +52,7 @@ function heroIdOf(v: unknown, where: string): HeroId {
 
 function parsePlayers(raw: unknown): Player[] {
   if (!Array.isArray(raw)) throw new ImportError('players must be an array');
+  const seen = new Set<number>();
   return raw.map((p: unknown, i) => {
     if (!isObject(p)) throw new ImportError(`Player ${i} must be an object`);
     if (typeof p.id !== 'string' || typeof p.name !== 'string') {
@@ -60,6 +61,8 @@ function parsePlayers(raw: unknown): Player[] {
     if (!intIn(p.position, 1, 5)) {
       throw new ImportError(`Player ${p.name} has invalid position ${String(p.position)} (must be 1-5)`);
     }
+    if (seen.has(p.position)) throw new ImportError(`Duplicate player for position ${p.position}`);
+    seen.add(p.position);
     if (!Array.isArray(p.pool)) throw new ImportError(`Player ${p.name} pool must be an array`);
     const pool: PoolEntry[] = p.pool.map((e: unknown) => {
       if (!isObject(e)) throw new ImportError(`Player ${String(p.name)} has an invalid pool entry`);
@@ -69,7 +72,7 @@ function parsePlayers(raw: unknown): Player[] {
       }
       return { heroId, comfort: e.comfort as 1 | 2 | 3 };
     });
-    return { id: p.id, name: p.name, position: p.position as Position, pool };
+    return { id: `pos-${p.position}`, name: p.name, position: p.position as Position, pool };
   });
 }
 
@@ -116,7 +119,7 @@ function parseThreats(raw: unknown): Record<HeroId, Threat[]> {
     for (const t of val) {
       if (!THREATS.includes(t as Threat)) throw new ImportError(`Unknown threat ${String(t)} for hero ${heroId}`);
     }
-    out[heroId] = val as Threat[];
+    out[heroId] = [...new Set(val as Threat[])];
   }
   return out;
 }

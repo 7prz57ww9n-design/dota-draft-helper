@@ -81,8 +81,29 @@ describe('suggestPicks', () => {
     });
     const s = find(suggestPicks(ctx), SVEN)!;
     expect(reason(s, 'Synergy')!.points).toBe(2);
-    expect(reason(s, 'Synergy')!.label).toContain('Magnus');
+    expect(reason(s, 'Synergy')!.label).toBe('Synergy with Magnus');
     expect(reason(s, 'Lane duo')!.points).toBe(1);
+  });
+
+  it('emits one synergy reason per partner and omits zero strength', () => {
+    const ctx = makeContext({
+      players: [player(1, [SVEN]), player(4, [MAGNUS]), player(3, [AXE]), player(5, [LION])],
+      profiles: profilesOf(profile(SVEN), profile(MAGNUS), profile(AXE), profile(LION, {}, 'magical')),
+      synergies: [
+        { a: SVEN, b: MAGNUS, strength: 2, laneDuo: false },
+        { a: SVEN, b: AXE, strength: 1, laneDuo: false },
+        { a: SVEN, b: LION, strength: 0, laneDuo: false },
+      ],
+      ourPicks: [
+        { heroId: MAGNUS, position: 4 }, { heroId: AXE, position: 3 }, { heroId: LION, position: 5 },
+      ],
+    });
+    const s = find(suggestPicks(ctx), SVEN)!;
+    expect(s.reasons.filter((r) => r.label.startsWith('Synergy'))).toEqual([
+      { label: 'Synergy with Magnus', points: 2 },
+      { label: 'Synergy with Axe', points: 1 },
+    ]);
+    expect(s.score).toBe(3);
   });
 
   it('synergy pairs are unordered', () => {

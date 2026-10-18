@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { AXE, JUGGERNAUT, LION, SVEN, player, profile, profilesOf } from '../domain/testFixtures';
+import { AXE, JUGGERNAUT, LION, MAGNUS, SVEN, player, profile, profilesOf } from '../domain/testFixtures';
 import { initialState, useStore } from '../store/store';
 import DraftScreen from './DraftScreen';
 
@@ -101,5 +101,60 @@ describe('DraftScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: /start draft/i }));
     expect(useStore.getState().draft.available).toEqual([AXE]);
     expect(screen.getByTestId('pick-suggestions')).toBeTruthy();
+  });
+
+  test('toggling "We pick first" keeps actions and changes the next-step label', () => {
+    useStore.setState({
+      draft: { mode: 'captainsMode', weFirst: true, available: null, actions: [], win: 'balanced' },
+    });
+    render(<DraftScreen />);
+    const confirm = vi.spyOn(window, 'confirm');
+    pickViaPicker('Magnus');
+    expect(useStore.getState().draft.actions).toHaveLength(1);
+    expect(screen.getByText(/^Step 2\//).textContent).toContain('Our ban');
+    fireEvent.click(screen.getByRole('checkbox', { name: /we pick first/i }));
+    expect(confirm).not.toHaveBeenCalled();
+    expect(useStore.getState().draft.actions).toHaveLength(1);
+    expect(useStore.getState().draft.weFirst).toBe(false);
+    expect(screen.getByText(/^Step 2\//).textContent).toContain('Enemy ban');
+    confirm.mockRestore();
+  });
+
+  test('best-per-position row picks at its own position without prompting', () => {
+    useStore.setState({ players: [player(1, [JUGGERNAUT]), player(4, [AXE]), player(5, [AXE])] });
+    render(<DraftScreen />);
+    const best = within(screen.getByTestId('pick-suggestions'));
+    fireEvent.click(best.getByText('Pos 5').closest('button')!);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(useStore.getState().draft.actions).toEqual([
+      { side: 'us', kind: 'pick', heroId: AXE, position: 5 },
+    ]);
+  });
+
+  test('Start draft is disabled while the available list is empty', () => {
+    useStore.setState({
+      draft: { mode: 'captainsDraft', weFirst: true, available: null, actions: [], win: 'balanced' },
+    });
+    render(<DraftScreen />);
+    const start = () => screen.getByRole('button', { name: /start draft/i }) as HTMLButtonElement;
+    expect(start().disabled).toBe(true);
+    pickViaPicker('Axe');
+    expect(start().disabled).toBe(false);
+  });
+
+  test('Undo clears a pending position prompt and the one-shot override', () => {
+    useStore.setState({
+      draft: {
+        mode: 'freeform', weFirst: true, available: null, win: 'balanced',
+        actions: [{ side: 'enemy', kind: 'ban', heroId: MAGNUS }],
+      },
+    });
+    render(<DraftScreen />);
+    pickViaPicker('Axe');
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Enemy pick' }));
+    fireEvent.click(screen.getByRole('button', { name: /undo/i }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Our pick' }).getAttribute('aria-pressed')).toBe('true');
   });
 });

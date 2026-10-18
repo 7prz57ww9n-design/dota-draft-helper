@@ -9,10 +9,10 @@ beforeEach(() => {
 
 function populate() {
   const s = useStore.getState();
-  s.upsertPlayer({ id: 'p1', name: 'Ann', position: 1, pool: [] });
-  s.addToPool('p1', 1);
-  s.addToPool('p1', 1);
-  s.setComfort('p1', 1, 3);
+  s.upsertPlayer({ id: 'pos-1', name: 'Ann', position: 1, pool: [] });
+  s.addToPool('pos-1', 1);
+  s.addToPool('pos-1', 1);
+  s.setComfort('pos-1', 1, 3);
   s.setRating(1, 'disable', 2);
   s.setPower(1, 'late', 3);
   s.setDamageType(1, 'magical');
@@ -61,6 +61,21 @@ describe('export/import', () => {
     const base = exportData(useStore.getState());
     const bad = { ...base, profiles: { 1: { heroId: 1, ratings: { waveclear: 5 }, power: { early: 0, mid: 0, late: 0 }, damageType: 'pure' } } };
     expect(() => parseImport(JSON.stringify(bad))).toThrow('Rating 5 for hero 1 key waveclear is out of range 0–3');
+  });
+
+  it('normalises player ids to pos-<position> and rejects duplicate positions', () => {
+    const base = exportData(useStore.getState());
+    const mk = (id: string, position: number) => ({ id, name: `N${id}`, position, pool: [] });
+    const ok = parseImport(JSON.stringify({ ...base, players: [mk('abc', 2), mk('xyz', 5)] }));
+    expect(ok.players.map((p) => p.id)).toEqual(['pos-2', 'pos-5']);
+    expect(() => parseImport(JSON.stringify({ ...base, players: [mk('a', 2), mk('b', 2)] })))
+      .toThrow('Duplicate player for position 2');
+  });
+
+  it('de-duplicates each hero threat list on import', () => {
+    const base = exportData(useStore.getState());
+    const data = { ...base, threats: { 2: ['tanky', 'illusions', 'tanky'] } };
+    expect(parseImport(JSON.stringify(data)).threats[2]).toEqual(['tanky', 'illusions']);
   });
 
   it('drops unknown rating keys', () => {

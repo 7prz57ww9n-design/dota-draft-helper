@@ -34,6 +34,7 @@ export interface Actions {
   draftApply: (action: DraftAction) => void;
   draftUndo: () => void;
   draftReset: (mode: DraftMode, weFirst: boolean) => void;
+  setWeFirst: (weFirst: boolean) => void;
   setAvailable: (ids: HeroId[] | null) => void;
   setWin: (win: WinCondition) => void;
   importData: (data: ExportFile) => void;
@@ -124,6 +125,7 @@ export const useStore = create<StoreState>()(
         },
         draftUndo: () => set((s) => ({ draft: undo(s.draft) })),
         draftReset: (mode, weFirst) => set({ draft: freshDraft(mode, weFirst) }),
+        setWeFirst: (weFirst) => set((s) => ({ draft: { ...s.draft, weFirst } })),
         setAvailable: (ids) => set((s) => ({ draft: { ...s.draft, available: ids } })),
         setWin: (win) => set((s) => ({ draft: { ...s.draft, win } })),
         importData: (data) => set({

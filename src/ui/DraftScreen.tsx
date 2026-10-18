@@ -54,7 +54,7 @@ function HeroChip({ heroId, onRemove }: { heroId: HeroId; onRemove?: () => void 
 
 export default function DraftScreen() {
   const { players, profiles, threats, synergies, watchlist, draft } = useStore();
-  const { draftApply, draftUndo, draftReset, setAvailable, setWin } = useStore.getState();
+  const { draftApply, draftUndo, draftReset, setWeFirst, setAvailable, setWin } = useStore.getState();
 
   const [override, setOverride] = useState<Current | null>(null);
   const [pending, setPending] = useState<{ heroId: HeroId; action: Current; options: Position[] } | null>(null);
@@ -159,7 +159,7 @@ export default function DraftScreen() {
           <input
             type="checkbox"
             checked={draft.weFirst}
-            onChange={(e) => confirmReset(draft.mode, e.target.checked)}
+            onChange={(e) => setWeFirst(e.target.checked)}
           /> We pick first
         </label>
         <strong className="step">{stepLabel}</strong>
@@ -175,7 +175,7 @@ export default function DraftScreen() {
             </button>
           ))}
         </span>
-        <button onClick={() => { draftUndo(); setError(null); }} disabled={draft.actions.length === 0}>Undo</button>
+        <button onClick={() => { draftUndo(); setError(null); setOverride(null); setPending(null); }} disabled={draft.actions.length === 0}>Undo</button>
         <button className="danger" onClick={() => confirmReset(draft.mode, draft.weFirst)}>Reset</button>
       </div>
 
@@ -218,7 +218,7 @@ export default function DraftScreen() {
                   <HeroChip key={id} heroId={id} onRemove={() => setAvailList((l) => l.filter((x) => x !== id))} />
                 ))}
               </div>
-              <button onClick={startDraft}>Start draft</button>
+              <button onClick={startDraft} disabled={availList.length === 0}>Start draft</button>
             </div>
           ) : (
             <div className="card">
@@ -271,7 +271,7 @@ export default function DraftScreen() {
                   {openPositions.map((p) => {
                     const best = derived.picks.bestByPosition[p];
                     return best ? (
-                      <SuggestionRow key={p} item={{ ...best, positions: [p] }} onPick={pickOurs} />
+                      <SuggestionRow key={p} item={{ ...best, positions: [p] }} onPick={(id) => dispatch(id, { side: 'us', kind: 'pick' }, p)} />
                     ) : (
                       <li key={p} className="empty">No candidates for Pos {p}</li>
                     );
